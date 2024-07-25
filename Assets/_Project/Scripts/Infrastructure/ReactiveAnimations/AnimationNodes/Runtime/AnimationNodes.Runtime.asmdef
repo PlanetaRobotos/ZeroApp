@@ -1,0 +1,16 @@
+{
+    "name": "AnimationNodes.Runtime",
+    "rootNamespace": "",
+    "references": [
+        "ManagedReference.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

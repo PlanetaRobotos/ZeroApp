@@ -1,0 +1,21 @@
+{
+    "name": "Core.Impl",
+    "rootNamespace": "",
+    "references": [
+        "GUID:dd737adc90e5bec44b5375f15937c6d2",
+        "GUID:560b04d1a97f54a4e82edc0cbbb69285",
+        "Data",
+        "Core",
+        "GUID:bfb098b726c84626b2a5bd57f539187c",
+        "GUID:d0c6c2a82c85d0b438043bfab0f3c1b7"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

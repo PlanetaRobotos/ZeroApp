@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef3ccb6153be447992eb10f27c13a30d, type: 3}
+  m_Name: AnimalEntity
+  m_EditorClassIdentifier: 
+  <FollowSpeed>k__BackingField: 25
+  <DeadDelay>k__BackingField: 5
+  <InteractDistance>k__BackingField: 3
+  <Cost>k__BackingField: 1
+  <PatrolRadius>k__BackingField: 6
+  <StartPatrolDelay>k__BackingField: 2
+  <PatrolSpeed>k__BackingField: 4
+  <FindNextPointDelay>k__BackingField: 6

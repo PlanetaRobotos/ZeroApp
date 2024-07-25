@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76bbc3cd672043ef99be391b740a7b7b, type: 3}
+  m_Name: EntitiesConfig
+  m_EditorClassIdentifier: 
+  <Entities>k__BackingField:
+  - <AddressableKey>k__BackingField: PlayerEntity
+    <DefaultSpawnPosition>k__BackingField: {x: 0, y: 0}
+  - <AddressableKey>k__BackingField: SimpleAI
+    <DefaultSpawnPosition>k__BackingField: {x: 2, y: 0}
+  <SpawnLayerMask>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 320
+  <CheckSpawnRadius>k__BackingField: 0.5
+  <MaxAnimalsAmount>k__BackingField: 50
+  <MaxFollowAmount>k__BackingField: 5
+  <SpawnDelayInterval>k__BackingField:
+    min: 1
+    max: 2
+  _followScript:
+    rid: 3348276337253548044
+  references:
+    version: 2
+    RefIds:
+    - rid: 3348276337253548044
+      type: {class: LineFormation, ns: _Project.Mechanics.Entities.Formations, asm: Assembly-CSharp}
+      data:
+        <Spacing>k__BackingField: 2.2

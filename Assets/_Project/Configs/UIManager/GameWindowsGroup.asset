@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f1fd58edddcb0d449eb25a5b04e6412, type: 3}
+  m_Name: GameWindowsGroup
+  m_EditorClassIdentifier: 
+  id: GameWindows
+  windowsData:
+  - windowId: LoadingWindow
+    windowRef:
+      m_AssetGUID: 4bdbd537e6bbef747808a02dd11afdfa
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+  - windowId: HUDWindow
+    windowRef:
+      m_AssetGUID: 77dd00c05414eb64fa235a85b0e4cc3f
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+  - windowId: BoardWindow
+    windowRef:
+      m_AssetGUID: 5dc696d8871ce9b4cbd10772e9b71d64
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+  - windowId: SelectModeWindow
+    windowRef:
+      m_AssetGUID: 5afe96546d743a74ab6662f7ded2e47a
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0

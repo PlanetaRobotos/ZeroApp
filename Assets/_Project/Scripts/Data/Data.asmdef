@@ -1,0 +1,17 @@
+﻿{
+  "name": "Data",
+  "rootNamespace": "",
+  "references": [
+    "UniRx",
+    "com.atoxic.windows"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
