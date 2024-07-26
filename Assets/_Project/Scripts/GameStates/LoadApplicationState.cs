@@ -46,16 +46,8 @@ namespace _Project.Scripts.Infrastructure.States
                 new OpenWindowTask<LoadingWindow>(_windowsController, WindowsConstants.LOADING_WINDOW, true),
                 new OpenWindowTask<HUDWindow>(_windowsController, WindowsConstants.HUD_WINDOW, true),
                 new OpenWindowTask<SelectModeWindow>(_windowsController, WindowsConstants.SELECT_MODE_WINDOW, true),
-                // new MakeActionTaskAsync(
-                // () => _scenesManager.LoadScene((byte)SceneLibraryConstants.GAMEPLAY, _cts.Token)),
-
-                // new LoadEntitiesTaskAsync(),
-                // new MakeActionTask<FollowBehaviour>(_followBehaviour, x => x.Initialize()),
-
-                // new MakeActionTaskAsync(
-                    // () => { return _photonManager.StartGame(); })
-
-                // new LoadAndOpenBoardWidgetTask(),
+                new MakeActionTaskAsync(
+                    () => _scenesManager.LoadScene((byte)SceneLibraryConstants.MAIN_MENU, _cts.Token)),
             };
             return tasks;
         }

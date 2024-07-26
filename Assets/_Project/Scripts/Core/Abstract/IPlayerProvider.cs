@@ -2,6 +2,7 @@
 {
     public interface IPlayerProvider
     {
-        PlayerProfile Player { get; set; }
+        PlayerProfile Player { get; }
+        void SetPlayer(PlayerProfile player);
     }
 }

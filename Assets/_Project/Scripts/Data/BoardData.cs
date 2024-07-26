@@ -7,5 +7,8 @@ namespace _Project.Scripts.Core
     {
         public Action<SymbolType, int, int> OnBoardCellChanged;
         public Action<SymbolType[,]> OnBoardChanged;
+        public Action<SymbolType> OnPlayerWin;
+        public Action OnDraw;
+        public Action<bool> OnInteractiveChanged;
     }
 }

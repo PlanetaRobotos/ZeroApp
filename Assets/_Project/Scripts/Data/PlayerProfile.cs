@@ -1,22 +1,14 @@
-﻿namespace _Project.Scripts.Core
-{
-    public class PlayerProfile
-    {
-        public string Name { get; set; }
-        public SymbolType Symbol { get; set; }
-        public int Wins { get; set; }
-    
-        public void Initialize(PlayerData playerData)
-        {
-            Name = playerData.Name;
-            Symbol = playerData.Symbol;
-            Wins = 0;
-        }
-    }
+﻿using Fusion;
 
-    public struct PlayerData
+namespace _Project.Scripts.Core
+{
+    [System.Serializable]
+    public struct PlayerProfile : INetworkStruct
     {
-        public string Name;
+        public NetworkString<_16> Name;
         public SymbolType Symbol;
+        public int Wins;
+
+        public override string ToString() => $"{Name} ({Symbol})";
     }
 }

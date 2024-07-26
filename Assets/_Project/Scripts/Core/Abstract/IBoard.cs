@@ -2,10 +2,12 @@
 {
     public interface IBoard
     {
-        // SymbolType[,] Grid { get; }
-        bool PlaceSymbol(int row, int column, SymbolType symbol);
+        SymbolType[,] Grid { get; }
+        bool IsInteractive { get; set; }
+        void PlaceSymbol(int row, int column, SymbolType symbol);
         bool IsCellEmpty(int row, int column);
         bool IsFull();
         void Reset();
+        // void SetInteractive(bool isActive);
     }
 }

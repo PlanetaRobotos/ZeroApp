@@ -16,3 +16,4 @@ MonoBehaviour:
   soundMapKeys:
   - PRELOADER
   - GAMEPLAY
+  - MAIN_MENU

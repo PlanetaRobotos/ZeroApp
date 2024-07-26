@@ -1,60 +1,102 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using _Project.Scripts.Core;
+using _Project.Scripts.Core.Abstract;
+using _Project.Scripts.GameConstants;
+using _Project.Scripts.Windows.HUD;
+using Constellation.SceneManagement;
 using Cysharp.Threading.Tasks;
 using Fusion;
 using Fusion.Sockets;
 using UnityEngine;
+using WindowsSystem.Core.Managers;
 
 public class PhotonManager : MonoBehaviour, INetworkRunnerCallbacks
 {
     public NetworkPrefabRef gameManagerPrefab;
 
+    public NetworkGameManager[] Players = new NetworkGameManager[2];
+
     private NetworkRunner _runner;
-    private NetworkGameManager _networkManager;
+    private CancellationTokenSource _cts;
+
+    [Inject] private WindowsController WindowsController { get; }
+    [Inject] private BoardData _boardData;
+    [Inject] private IScenesManager ScenesManager { get; }
+    [Inject] private IPlayerProvider PlayerProvider { get; }
+
+    public NetworkGameManager GetOtherPlayer => 
+        Players.First(x => x.Runner.LocalPlayer != _runner.LocalPlayer);
 
     public async UniTask StartGame()
     {
-        _runner = gameObject.AddComponent<NetworkRunner>();
+        _cts = new CancellationTokenSource();
+        _runner = new GameObject("Network Runner").AddComponent<NetworkRunner>();
+        var sceneManager = _runner.gameObject.AddComponent<NetworkSceneManagerDefault>();
+        _runner.transform.SetParent(gameObject.transform);
         _runner.ProvideInput = true;
         _runner.AddCallbacks(this);
+
+        await ScenesManager.LoadScene((byte)SceneLibraryConstants.GAMEPLAY, _cts.Token);
 
         var startGameArgs = new StartGameArgs
         {
             GameMode = GameMode.Shared,
             SessionName = "TicTacToeRoom",
-            SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
+            SceneManager = sceneManager
         };
 
         await _runner.StartGame(startGameArgs);
 
+        _runner.Spawn(gameManagerPrefab, Vector3.zero, Quaternion.identity, _runner.LocalPlayer)
+            .GetComponent<NetworkGameManager>();
+
+        await UniTask.WaitWhile(() => FindObjectsOfType<NetworkGameManager>().Length < 2);
+        Players = FindObjectsOfType<NetworkGameManager>();
+
         if (_runner.IsSharedModeMasterClient)
         {
-            _networkManager = _runner.Spawn(gameManagerPrefab, Vector3.zero, Quaternion.identity, _runner.LocalPlayer)
-                .GetComponent<NetworkGameManager>();
-            
-            Locator.Register(_networkManager);
-
-            Debug.Log($"{_networkManager} spawned as master client");
+            BothPlayersAreJoinedAsync().Forget();
         }
     }
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        if (_networkManager == null)
-        {
-            _networkManager = Locator.GetService<NetworkGameManager>();
-        }
-
         Debug.Log($"Player {player} joined");
-        // Check if we have 2 players connected
-        if (runner.ActivePlayers.Count() == 2)
+    }
+
+    private async UniTask BothPlayersAreJoinedAsync()
+    {
+        SetPlayerSymbol(Players[0], SymbolType.Cross, isInteractable: true);
+        SetPlayerSymbol(Players[1], SymbolType.Circle, isInteractable: false);
+
+        Debug.Log($"Assigned symbols: Player {Players[0]} = X, Player {Players[1]} = O");
+
+        foreach (var player in Players)
+            player.StartGameRpc();
+    }
+
+    private void SetPlayerSymbol(NetworkGameManager player, SymbolType symbol, NetworkBool isInteractable)
+    {
+        var playerProfile = new PlayerProfile
         {
-            _networkManager.StartGame();
+            Name = $"Player {symbol}",
+            Symbol = symbol
+        };
+
+        player.SetPlayerRpc(playerProfile, isInteractable);
+    }
+
+    public void ExitSession()
+    {
+        if (_runner != null)
+        {
+            _runner.Shutdown();
         }
     }
 
-    // Implement other INetworkRunnerCallbacks methods as needed
     public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
     {
     }
@@ -65,9 +107,21 @@ public class PhotonManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
-        Debug.Log($"Player {player} left");
-        // Handle player leaving, possibly end the game
-        _networkManager.EndGame();
+        Debug.Log($"Player {player} left OnPlayerLeft");
+        PlayerLeftAsync().Forget();
+    }
+
+    private async UniTaskVoid PlayerLeftAsync()
+    {
+        await FindObjectOfType<NetworkGameManager>().EndGame(_cts.Token);
+
+        WindowsController.OpenImmediate<SelectModeWindow>(WindowsConstants.SELECT_MODE_WINDOW);
+
+        if (_runner != null)
+        {
+            Destroy(_runner.gameObject);
+            _runner = null;
+        }
     }
 
     public void OnInput(NetworkRunner runner, NetworkInput input)
@@ -80,6 +134,8 @@ public class PhotonManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
     {
+        Debug.Log($"Player left OnShutdown");
+        PlayerLeftAsync().Forget();
     }
 
     public void OnConnectedToServer(NetworkRunner runner)
