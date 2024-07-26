@@ -32,6 +32,22 @@ namespace _Project.Scripts.Core
             Reset();
         }
 
+        [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+        public void MakeMoveRpc(BoardCell cell)
+        {
+            Debug.Log($"MakeMoveRpc called {cell}");
+
+            NetworkCell = cell;
+        }
+
+        private void GridChanged()
+        {
+            if (HasStateAuthority && IsInteractive)
+            {
+                PlaceSymbol(NetworkCell.Row, NetworkCell.Column, NetworkCell.Symbol);
+            }
+        }
+
         public void PlaceSymbol(int row, int column, SymbolType symbol)
         {
             _logger.Log($"Grid changed from server {Grid}");
@@ -63,26 +79,10 @@ namespace _Project.Scripts.Core
             _photonManager.GetOtherPlayer.Board.IsInteractive = true;
         }
 
-        [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-        public void MakeMoveRpc(BoardCell cell)
-        {
-            Debug.Log($"MakeMoveRpc called {cell}");
-
-            NetworkCell = cell;
-        }
-
         [Command("show-player")]
         public void ShowPlayer()
         {
             // Debug.Log($"Current player: {currentPlayer.PlayerId}");
-        }
-
-        private void GridChanged()
-        {
-            if (HasStateAuthority && IsInteractive)
-            {
-                PlaceSymbol(NetworkCell.Row, NetworkCell.Column, NetworkCell.Symbol);
-            }
         }
 
         public bool IsCellEmpty(int row, int column)

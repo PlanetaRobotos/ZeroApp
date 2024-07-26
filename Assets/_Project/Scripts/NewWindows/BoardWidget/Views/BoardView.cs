@@ -54,7 +54,7 @@ namespace _Project.Scripts.Windows.HUD
         {
             foreach (var network in _photonManager.Players)
             {
-                network.GetComponent<Board>().MakeMoveRpc(new BoardCell
+                network.Board.MakeMoveRpc(new BoardCell
                 {
                     Row = x,
                     Column = y,
