@@ -42,7 +42,7 @@ namespace _Project.Scripts.Core
 
         private void GridChanged()
         {
-            if (HasStateAuthority && IsInteractive)
+            if (HasStateAuthority)
             {
                 PlaceSymbol(NetworkCell.Row, NetworkCell.Column, NetworkCell.Symbol);
             }
