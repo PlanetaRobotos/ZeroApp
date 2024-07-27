@@ -52,15 +52,7 @@ namespace _Project.Scripts.Windows.HUD
 
         private void OnButtonClicked(int x, int y)
         {
-            foreach (var network in _photonManager.Players)
-            {
-                network.Board.MakeMoveRpc(new BoardCell
-                {
-                    Row = x,
-                    Column = y,
-                    Symbol = _playerProvider.Player.Symbol
-                });
-            }
+            _photonManager.TryMakeMove(x, y);
         }
 
         public void UpdateBoard(SymbolType[,] grid)

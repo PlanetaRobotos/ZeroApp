@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using _Project.Scripts.Core;
 using _Project.Scripts.Core.Abstract;
+using _Project.Scripts.Data;
 using _Project.Scripts.GameConstants;
 using _Project.Scripts.Windows.HUD;
 using Constellation.SceneManagement;
@@ -18,6 +19,7 @@ public class PhotonManager : MonoBehaviour, INetworkRunnerCallbacks
     public NetworkPrefabRef gameManagerPrefab;
 
     public NetworkGameManager[] Players = new NetworkGameManager[2];
+    private NetworkGameManager _currentPlayer;
 
     private NetworkRunner _runner;
     private CancellationTokenSource _cts;
@@ -27,7 +29,7 @@ public class PhotonManager : MonoBehaviour, INetworkRunnerCallbacks
     [Inject] private IScenesManager ScenesManager { get; }
     [Inject] private IPlayerProvider PlayerProvider { get; }
 
-    public NetworkGameManager GetOtherPlayer => 
+    public NetworkGameManager GetOtherPlayer =>
         Players.First(x => x.Runner.LocalPlayer != _runner.LocalPlayer);
 
     public async UniTask StartGame()
@@ -50,7 +52,7 @@ public class PhotonManager : MonoBehaviour, INetworkRunnerCallbacks
 
         await _runner.StartGame(startGameArgs);
 
-        _runner.Spawn(gameManagerPrefab, Vector3.zero, Quaternion.identity, _runner.LocalPlayer)
+        _currentPlayer = _runner.Spawn(gameManagerPrefab, Vector3.zero, Quaternion.identity, _runner.LocalPlayer)
             .GetComponent<NetworkGameManager>();
 
         await UniTask.WaitWhile(() => FindObjectsOfType<NetworkGameManager>().Length < 2);
@@ -184,5 +186,21 @@ public class PhotonManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnSceneLoadStart(NetworkRunner runner)
     {
+    }
+
+    public void TryMakeMove(int x, int y)
+    {
+        if (_currentPlayer.Board.IsInteractive)
+        {
+            foreach (var network in Players)
+            {
+                network.Board.MakeMoveRpc(new BoardCell
+                {
+                    Row = x,
+                    Column = y,
+                    Symbol = PlayerProvider.Player.Symbol
+                });
+            }
+        }
     }
 }
