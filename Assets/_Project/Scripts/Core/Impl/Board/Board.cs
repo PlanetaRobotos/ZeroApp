@@ -15,6 +15,7 @@ namespace _Project.Scripts.Core
         [Inject] private IGameRules _gameRules;
         [Inject] private BoardFactory _boardFactory;
         [Inject] private PhotonManager _photonManager;
+        [Inject] private IPlayerProvider _playerProvider;
 
         private int _gridSize;
 
@@ -35,7 +36,7 @@ namespace _Project.Scripts.Core
         [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
         public void MakeMoveRpc(BoardCell cell)
         {
-            Debug.Log($"MakeMoveRpc called {cell}");
+            Debug.Log($"MakeMoveRpc called {cell} - {_playerProvider.Player}");
 
             NetworkCell = cell;
         }

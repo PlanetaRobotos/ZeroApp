@@ -23,6 +23,8 @@ public class NetworkGameManager : NetworkBehaviour
     [Inject] private IPlayerProvider _playerProvider;
     [Inject] private BoardConfig _boardConfig;
 
+    public IPlayerProvider PlayerProvider => _playerProvider;
+
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void StartGameRpc()
     {

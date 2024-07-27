@@ -30,7 +30,7 @@ public class PhotonManager : MonoBehaviour, INetworkRunnerCallbacks
     [Inject] private IPlayerProvider PlayerProvider { get; }
 
     public NetworkGameManager GetOtherPlayer =>
-        Players.First(x => x.Runner.LocalPlayer != _runner.LocalPlayer);
+        Players.First(x => x != _currentPlayer);
 
     public async UniTask StartGame()
     {
@@ -96,6 +96,28 @@ public class PhotonManager : MonoBehaviour, INetworkRunnerCallbacks
         if (_runner != null)
         {
             _runner.Shutdown();
+        }
+    }
+
+    public void TryMakeMove(int x, int y)
+    {
+        if (_currentPlayer.Board.IsInteractive)
+        {
+            Debug.Log($"Player {PlayerProvider.Player} is interactive");
+            
+            foreach (var network in Players)
+            {
+                network.Board.MakeMoveRpc(new BoardCell
+                {
+                    Row = x,
+                    Column = y,
+                    Symbol = PlayerProvider.Player.Symbol
+                });
+            }
+        }
+        else
+        {
+            Debug.Log($"Player {PlayerProvider.Player} is not interactive");
         }
     }
 
@@ -186,21 +208,5 @@ public class PhotonManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnSceneLoadStart(NetworkRunner runner)
     {
-    }
-
-    public void TryMakeMove(int x, int y)
-    {
-        if (_currentPlayer.Board.IsInteractive)
-        {
-            foreach (var network in Players)
-            {
-                network.Board.MakeMoveRpc(new BoardCell
-                {
-                    Row = x,
-                    Column = y,
-                    Symbol = PlayerProvider.Player.Symbol
-                });
-            }
-        }
     }
 }
