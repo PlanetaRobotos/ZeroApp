@@ -77,7 +77,7 @@ namespace _Project.Scripts.Core
 
             _boardData.OnBoardChanged?.Invoke(Grid);
             IsInteractive = false;
-            _photonManager.GetOtherPlayer.Board.IsInteractive = true;
+            _photonManager.GetOtherPlayer.SetInteractRpc(true);
         }
 
         [Command("show-player")]
@@ -118,6 +118,7 @@ namespace _Project.Scripts.Core
             get => NetworkIsInteract;
             set
             {
+                _logger.Log($"IsInteractive changed to {value}");
                 _boardData.OnInteractiveChanged?.Invoke(value);
                 NetworkIsInteract = value;
             }

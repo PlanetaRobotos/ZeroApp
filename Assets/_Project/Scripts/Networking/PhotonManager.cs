@@ -88,7 +88,8 @@ public class PhotonManager : MonoBehaviour, INetworkRunnerCallbacks
             Symbol = symbol
         };
 
-        player.SetPlayerRpc(playerProfile, isInteractable);
+        player.SetPlayerRpc(playerProfile);
+        player.SetInteractRpc(isInteractable);
     }
 
     public void ExitSession()

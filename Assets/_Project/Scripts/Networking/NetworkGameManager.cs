@@ -45,12 +45,19 @@ public class NetworkGameManager : NetworkBehaviour
     }
 
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void SetPlayerRpc(PlayerProfile playerProfile, NetworkBool isInteractable)
+    public void SetPlayerRpc(PlayerProfile playerProfile)
     {
-        Debug.Log($"Player changed {playerProfile}, isInteractable {isInteractable}");
+        Debug.Log($"Player changed {playerProfile}");
 
         _playerProvider.SetPlayer(playerProfile);
         gameObject.name = playerProfile.Name.Value;
+    }
+    
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void SetInteractRpc(NetworkBool isInteractable)
+    {
+        Debug.Log($"Board changed isInteractable {isInteractable}");
+        
         board.IsInteractive = isInteractable;
     }
 }
