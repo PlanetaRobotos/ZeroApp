@@ -65,19 +65,21 @@ namespace _Project.Scripts.Core
             {
                 Debug.Log($"Player {symbol} wins");
                 _boardData.OnPlayerWin?.Invoke(symbol);
-                IsInteractive = false;
             }
 
             if (_gameRules.CheckDraw(this))
             {
                 Debug.Log("Draw");
                 _boardData.OnDraw?.Invoke();
-                IsInteractive = false;
             }
 
             _boardData.OnBoardChanged?.Invoke(Grid);
-            IsInteractive = false;
-            _photonManager.GetOtherPlayer.SetInteractRpc(true);
+
+            if (symbol == _playerProvider.Player.Symbol)
+            {
+                IsInteractive = false;
+                _photonManager.GetOtherPlayer.SetInteractRpc(true);
+            }
         }
 
         [Command("show-player")]
