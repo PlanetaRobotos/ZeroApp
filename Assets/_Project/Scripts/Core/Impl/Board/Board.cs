@@ -1,32 +1,91 @@
-﻿using System;
-using _Project.Scripts.Core.Abstract;
+﻿using _Project.Scripts.Core.Abstract;
+using _Project.Scripts.Data;
+using _Project.Scripts.Windows.HUD;
 using Fusion;
+using Logging;
+using QFSW.QC;
+using UnityEngine;
 
 namespace _Project.Scripts.Core
 {
     public class Board : NetworkBehaviour, IBoard
     {
         [Inject] private BoardData _boardData;
+        [Inject] private ICustomLogger _logger;
+        [Inject] private IGameRules _gameRules;
+        [Inject] private BoardFactory _boardFactory;
+        [Inject] private PhotonManager _photonManager;
+        [Inject] private IPlayerProvider _playerProvider;
 
-        private SymbolType[,] Grid { get; }
+        private int _gridSize;
 
-        public Board()
+        public NetworkBool NetworkIsInteract { get; private set; }
+
+        public SymbolType[,] Grid { get; private set; }
+
+        [Networked, OnChangedRender(nameof(GridChanged))]
+        public BoardCell NetworkCell { get; set; }
+
+        public void Initialize()
         {
-            Grid = new SymbolType[3, 3];
+            Grid = _boardFactory.CreateGrid();
             _boardData.OnBoardChanged?.Invoke(Grid);
             Reset();
         }
 
-        public bool PlaceSymbol(int row, int column, SymbolType symbol)
+        [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+        public void MakeMoveRpc(BoardCell cell)
         {
-            if (IsCellEmpty(row, column))
+            Debug.Log($"MakeMoveRpc called {cell} - {_playerProvider.Player}");
+
+            NetworkCell = cell;
+        }
+
+        private void GridChanged()
+        {
+            if (HasStateAuthority)
             {
-                Grid[row, column] = symbol;
-                _boardData.OnBoardCellChanged?.Invoke(symbol, row, column);
-                return true;
+                PlaceSymbol(NetworkCell.Row, NetworkCell.Column, NetworkCell.Symbol);
+            }
+        }
+
+        public void PlaceSymbol(int row, int column, SymbolType symbol)
+        {
+            _logger.Log($"Grid changed from server {Grid}");
+
+            if (!IsCellEmpty(row, column))
+            {
+                Debug.Log($"Cell {row} - {column} is not empty");
+                return;
             }
 
-            return false;
+            Grid[row, column] = symbol;
+
+            if (_gameRules.CheckWin(Grid, symbol))
+            {
+                Debug.Log($"Player {symbol} wins");
+                _boardData.OnPlayerWin?.Invoke(symbol);
+            }
+
+            if (_gameRules.CheckDraw(this))
+            {
+                Debug.Log("Draw");
+                _boardData.OnDraw?.Invoke();
+            }
+
+            _boardData.OnBoardChanged?.Invoke(Grid);
+
+            if (symbol == _playerProvider.Player.Symbol)
+            {
+                IsInteractive = false;
+                _photonManager.GetOtherPlayer.SetInteractRpc(true);
+            }
+        }
+
+        [Command("show-player")]
+        public void ShowPlayer()
+        {
+            // Debug.Log($"Current player: {currentPlayer.PlayerId}");
         }
 
         public bool IsCellEmpty(int row, int column)
@@ -47,13 +106,30 @@ namespace _Project.Scripts.Core
 
         public void Reset()
         {
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < _gridSize; i++)
             {
-                for (int j = 0; j < 3; j++)
+                for (int j = 0; j < _gridSize; j++)
                 {
                     Grid[i, j] = SymbolType.None;
                 }
             }
         }
+
+        public bool IsInteractive
+        {
+            get => NetworkIsInteract;
+            set
+            {
+                _logger.Log($"IsInteractive changed to {value}");
+                _boardData.OnInteractiveChanged?.Invoke(value);
+                _boardData.OnPlayerTurn?.Invoke(value);
+                NetworkIsInteract = value;
+            }
+        }
+
+        /*public void SetInteractive(bool isActive)
+        {
+            _boardData.OnInteractiveChanged?.Invoke(isActive);
+        }*/
     }
 }

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7962821544904587641}
   - component: {fileID: 6376603290299316317}
   - component: {fileID: 324994784951675472}
+  - component: {fileID: 7698180679219177330}
   m_Layer: 0
   m_Name: NetworkGameManager
   m_TagString: Untagged
@@ -45,8 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 706fdb35262b4f08bfad2f559bfaf5a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boardPrefab:
-    RawGuidValue: 00000000000000000000000000000000
+  board: {fileID: 7698180679219177330}
 --- !u!114 &324994784951675472
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65,3 +65,16 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 6376603290299316317}
+  - {fileID: 7698180679219177330}
+--- !u!114 &7698180679219177330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8635325301356076182}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f29e86a1c5fb487f870c89bf92e4226a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -96,34 +96,5 @@ namespace _Project.Scripts.Infrastructure.Extensions.AsyncExtensions
 
         //public static WindowAwaiter GetAwaiter(this BaseWindow window) => new(window);
     }
-
-    /*
-     For example test awaiter
-    public struct WindowAwaiter : INotifyCompletion
-    {
-        private readonly BaseWindow _window;
-        private Action _continuation;
-
-        public WindowAwaiter(BaseWindow window)
-        {
-            _window = window;
-            _continuation = null;
-        }
-
-        public bool IsCompleted => _window.Status == Status.Closed;
-        public string GetResult() => string.Empty;
-        public void OnCompleted(Action continuation)
-        {
-            _continuation = continuation;
-            _window.IncomingData.onWindowClose += OnWindowClose;
-        }
-
-        private void OnWindowClose(IWindowView window)
-        {
-            _window.IncomingData.onWindowClose -= OnWindowClose;
-            _continuation.Invoke();
-        }
-    }
-    */
 }
 #endif

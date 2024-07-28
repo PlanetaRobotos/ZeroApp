@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using _Project.Configs.Boards;
 using _Project.Scripts.Core;
 using _Project.Scripts.Data;
 using Logging;
@@ -17,10 +18,13 @@ namespace _Project.Scripts.Windows.HUD
         [Inject] private ICustomLogger _logger;
 
         private readonly BoardDatabase _boardDatabase;
-        public Dictionary<SymbolType, SymbolSpriteModel> SpriteModels { get; }
+        private readonly BoardConfig _boardConfig;
 
-        public BoardFactory(BoardDatabase boardDatabase)
+        private Dictionary<SymbolType, SymbolSpriteModel> SpriteModels { get; }
+
+        public BoardFactory(BoardDatabase boardDatabase, BoardConfig boardConfig)
         {
+            _boardConfig = boardConfig;
             _boardDatabase = boardDatabase;
 
             SpriteModels = _boardDatabase.SymbolSprites.ToDictionary(x => x.SymbolType, y => y);
@@ -67,10 +71,8 @@ namespace _Project.Scripts.Windows.HUD
                     new Vector2(0, -y * (cellHeight + spacingY) + cellHeight / lineWidth + spacingY / lineWidth);
             }
         }
-    }
-    
-    public static class BoardExtensions
-    {
-        
+
+        public SymbolType[,] CreateGrid() => 
+            new SymbolType[_boardConfig.GridSize, _boardConfig.GridSize];
     }
 }

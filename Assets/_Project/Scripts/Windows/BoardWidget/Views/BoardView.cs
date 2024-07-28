@@ -1,32 +1,32 @@
 ﻿using System;
 using _Project.Scripts.Core;
 using _Project.Scripts.Core.Abstract;
+using _Project.Scripts.Data;
 using Logging;
 using UnityEngine;
 using UnityEngine.UI;
-using CellView = _Project.Scripts.Windows.HUD.CellView;
 
 namespace _Project.Scripts.Windows.HUD
 {
     public class BoardView : MonoBehaviour, IDisposable
     {
         public CellView buttonPrefab;
-        
+
         [SerializeField] private Transform cellsParent;
         [SerializeField] private Transform linesParent;
         [SerializeField] private GridLayoutGroup _gridLayoutGroup;
 
         private CellView[,] _cells;
         private ICustomLogger _logger;
-        
-        // [Inject] private IMover _mover;
-        [Inject] private NetworkGameManager _networkManager;
+        private PhotonManager _photonManager;
+
         [Inject] private IPlayerProvider _playerProvider;
         [Inject] private BoardFactory _boardFactory;
 
-        public void Construct(ICustomLogger logger)
+        public void Construct(ICustomLogger logger, PhotonManager photonManager)
         {
             _logger = logger;
+            _photonManager = photonManager;
         }
 
         public void Initialize(int colsAmount, int rowsAmount)
@@ -52,8 +52,7 @@ namespace _Project.Scripts.Windows.HUD
 
         private void OnButtonClicked(int x, int y)
         {
-            // Notify the controller about the button click
-            _networkManager.TryMakeMove(x, y);
+            _photonManager.TryMakeMove(x, y);
         }
 
         public void UpdateBoard(SymbolType[,] grid)
@@ -72,7 +71,7 @@ namespace _Project.Scripts.Windows.HUD
                 }
             }
         }
-        
+
         public void UpdateCell(SymbolType symbol, int row, int column)
         {
             _cells[row, column].SetSymbolSprite(_boardFactory.GetSpriteByType(symbol), symbol);

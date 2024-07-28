@@ -4,6 +4,9 @@ namespace _Project.Scripts.Core
 {
     public class PlayerProvider : IPlayerProvider
     {
-        public PlayerProfile Player { get; set; }
+        public PlayerProfile Player { get; private set; }
+
+        public void SetPlayer(PlayerProfile player) => 
+            Player = player;
     }
 }

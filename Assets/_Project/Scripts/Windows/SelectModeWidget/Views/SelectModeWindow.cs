@@ -19,7 +19,7 @@ namespace _Project.Scripts.Windows.HUD
         
         private async UniTaskVoid OnMultiplayerModeSelected()
         {
-            await _photonManager.StartGame();
+            _photonManager.StartGame().Forget();
             
             Close();
         }

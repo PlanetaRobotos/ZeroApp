@@ -2,7 +2,7 @@
 {
     public interface IGameRules
     {
-        bool CheckWin(IBoard board, PlayerProfile player);
+        bool CheckWin(SymbolType[,] grid, SymbolType symbol);
         bool CheckDraw(IBoard board);
     }
 }

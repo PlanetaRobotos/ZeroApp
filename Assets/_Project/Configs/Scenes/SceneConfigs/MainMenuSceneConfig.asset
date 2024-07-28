@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 58011a0bb83e4903948b7c93cb6d406d, type: 3}
-  m_Name: GameplaySceneConfig
+  m_Name: MainMenuSceneConfig
   m_EditorClassIdentifier: 
   asyncLoad: 0
   loadSceneMode: 0
@@ -20,4 +20,4 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
-  scenePath: Assets/_Project/Scenes/GameplayScene.unity
+  scenePath: Assets/_Project/Scenes/MainMenuScene.unity
