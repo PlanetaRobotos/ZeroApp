@@ -122,6 +122,7 @@ namespace _Project.Scripts.Core
             {
                 _logger.Log($"IsInteractive changed to {value}");
                 _boardData.OnInteractiveChanged?.Invoke(value);
+                _boardData.OnPlayerTurn?.Invoke(value);
                 NetworkIsInteract = value;
             }
         }

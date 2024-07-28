@@ -6,7 +6,8 @@ using _Project.Scripts.Core;
 using _Project.Scripts.Core.Abstract;
 using _Project.Scripts.Data;
 using _Project.Scripts.GameConstants;
-using _Project.Scripts.Windows.HUD;
+using _Project.Scripts.Infrastructure.Extensions.AsyncExtensions;
+using _Project.Scripts.Windows.SearchOpponentWidget.Views;
 using Constellation.SceneManagement;
 using Cysharp.Threading.Tasks;
 using Fusion;
@@ -16,6 +17,8 @@ using WindowsSystem.Core.Managers;
 
 public class PhotonManager : MonoBehaviour, INetworkRunnerCallbacks
 {
+    private const int WaitingOpponentDelay = 5;
+
     public NetworkPrefabRef gameManagerPrefab;
 
     public NetworkGameManager[] Players = new NetworkGameManager[2];
@@ -50,17 +53,45 @@ public class PhotonManager : MonoBehaviour, INetworkRunnerCallbacks
             SceneManager = sceneManager
         };
 
+        var searchOpponentWindow =
+            await WindowsController.OpenWindowAsync<SearchOpponentWindow>(WindowsConstants.SEARCH_WINDOW, _boardData,
+                true);
+
+        searchOpponentWindow.SetWaitingView("Loading game...");
+        Debug.Log($"[Multiplayer] Loading game...");
+
         await _runner.StartGame(startGameArgs);
 
         _currentPlayer = _runner.Spawn(gameManagerPrefab, Vector3.zero, Quaternion.identity, _runner.LocalPlayer)
             .GetComponent<NetworkGameManager>();
 
-        await UniTask.WaitWhile(() => FindObjectsOfType<NetworkGameManager>().Length < 2);
-        Players = FindObjectsOfType<NetworkGameManager>();
+        searchOpponentWindow.SetWaitingView("Waiting for opponent...");
+        Debug.Log($"[Multiplayer] Waiting for opponent...");
 
-        if (_runner.IsSharedModeMasterClient)
+        float searchOpponentTimer = 0;
+        while (searchOpponentTimer < WaitingOpponentDelay && FindObjectsOfType<NetworkGameManager>().Length < 2)
         {
-            BothPlayersAreJoinedAsync().Forget();
+            var delay = 0.2f;
+
+            await UniTask.Delay(TimeSpan.FromSeconds(delay));
+            searchOpponentTimer += delay;
+        }
+
+        TryCloseSearchOpponentWindow();
+
+        var players = FindObjectsOfType<NetworkGameManager>();
+        if (players.Length == 2)
+        {
+            Players = players;
+
+            if (_runner.IsSharedModeMasterClient)
+                await BothPlayersAreJoinedAsync();
+        }
+        else
+        {
+            Debug.LogError($"Players amount is {players.Length}");
+
+            await _runner.Shutdown();
         }
     }
 
@@ -71,25 +102,10 @@ public class PhotonManager : MonoBehaviour, INetworkRunnerCallbacks
 
     private async UniTask BothPlayersAreJoinedAsync()
     {
-        SetPlayerSymbol(Players[0], SymbolType.Cross, isInteractable: true);
-        SetPlayerSymbol(Players[1], SymbolType.Circle, isInteractable: false);
-
         Debug.Log($"Assigned symbols: Player {Players[0]} = X, Player {Players[1]} = O");
 
-        foreach (var player in Players)
-            player.StartGameRpc();
-    }
-
-    private void SetPlayerSymbol(NetworkGameManager player, SymbolType symbol, NetworkBool isInteractable)
-    {
-        var playerProfile = new PlayerProfile
-        {
-            Name = $"Player {symbol}",
-            Symbol = symbol
-        };
-
-        player.SetPlayerRpc(playerProfile);
-        player.SetInteractRpc(isInteractable);
+        Players[0].StartGameRpc(SymbolType.Cross, isInteractable: true);
+        Players[1].StartGameRpc(SymbolType.Circle, isInteractable: false);
     }
 
     public void ExitSession()
@@ -105,7 +121,7 @@ public class PhotonManager : MonoBehaviour, INetworkRunnerCallbacks
         if (_currentPlayer.Board.IsInteractive)
         {
             Debug.Log($"Player {PlayerProvider.Player} is interactive");
-            
+
             foreach (var network in Players)
             {
                 network.Board.MakeMoveRpc(new BoardCell
@@ -122,6 +138,14 @@ public class PhotonManager : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
+    private void TryCloseSearchOpponentWindow()
+    {
+        if (WindowsController.GetWindowById<SearchOpponentWindow>(WindowsConstants.SEARCH_WINDOW))
+            WindowsController.CloseWindow(WindowsConstants.SEARCH_WINDOW);
+        else
+            Debug.LogWarning("SearchOpponentWindow not found");
+    }
+
     public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
     {
     }
@@ -136,11 +160,15 @@ public class PhotonManager : MonoBehaviour, INetworkRunnerCallbacks
         PlayerLeftAsync().Forget();
     }
 
+    public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
+    {
+        Debug.Log($"Player left OnShutdown");
+        PlayerLeftAsync().Forget();
+    }
+
     private async UniTaskVoid PlayerLeftAsync()
     {
-        await FindObjectOfType<NetworkGameManager>().EndGame(_cts.Token);
-
-        WindowsController.OpenImmediate<SelectModeWindow>(WindowsConstants.SELECT_MODE_WINDOW);
+        await _currentPlayer.EndGame(_cts.Token);
 
         if (_runner != null)
         {
@@ -155,12 +183,6 @@ public class PhotonManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input)
     {
-    }
-
-    public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
-    {
-        Debug.Log($"Player left OnShutdown");
-        PlayerLeftAsync().Forget();
     }
 
     public void OnConnectedToServer(NetworkRunner runner)
