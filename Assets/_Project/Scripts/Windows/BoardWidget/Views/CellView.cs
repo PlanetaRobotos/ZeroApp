@@ -34,7 +34,7 @@ namespace _Project.Windows.BoardWidget.Views
 
             if (isAnimate)
             {
-                _symbolImage.transform.DOScale(0f, AppearTweenDuration).From(0f).SetEase(Ease.OutBounce);
+                _symbolImage.transform.DOScale(1f, AppearTweenDuration).From(0f).SetEase(Ease.OutBounce);
             }
         }
 
