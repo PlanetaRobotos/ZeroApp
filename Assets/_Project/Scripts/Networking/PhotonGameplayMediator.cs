@@ -20,7 +20,7 @@ namespace _Project.Networking
 {
     public class PhotonGameplayMediator : INetworkRunnerCallbacks, IGameplayMediator
     {
-        private const int WaitingOpponentDelay = 25;
+        private const int WaitingOpponentDelay = 15;
 
         private readonly NetworkPlayerHandler _networkPlayerPrefab;
         private CancellationTokenSource _cts;

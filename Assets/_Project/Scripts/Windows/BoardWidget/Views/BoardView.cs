@@ -57,14 +57,12 @@ namespace _Project.Windows.BoardWidget.Views
                 SymbolType symbolType = grid[i, j];
                 bool isSpriteFound = _boardFactory.GetSpriteByType(symbolType);
                 if (isSpriteFound)
-                    _cells[i, j].SetSymbolSprite(_boardFactory.GetSpriteByType(symbolType), symbolType);
+                {
+                    bool isSymbolUpdated = _cells[i, j].SymbolType != symbolType;
+                    _cells[i, j].SetSymbolSprite(_boardFactory.GetSpriteByType(symbolType), symbolType, isSymbolUpdated);
+                }
                 else _logger.LogError("Sprite not found for symbol type: " + symbolType);
             });
-        }
-
-        public void UpdateCell(SymbolType symbol, int row, int column)
-        {
-            _cells[row, column].SetSymbolSprite(_boardFactory.GetSpriteByType(symbol), symbol);
         }
 
         private void IterateCells(Action<int, int> action)

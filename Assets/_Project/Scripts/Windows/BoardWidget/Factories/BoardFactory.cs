@@ -38,7 +38,7 @@ namespace _Project.Windows.BoardWidget.Factories
         public CellView CreateCell(CellView buttonPrefab, Transform parent, SymbolType symbolType)
         {
             CellView cellView = Object.Instantiate(buttonPrefab, parent);
-            cellView.SetSymbolSprite(GetSpriteByType(symbolType), symbolType);
+            cellView.SetSymbolSprite(GetSpriteByType(symbolType), symbolType, false);
             return cellView;
         }
 
