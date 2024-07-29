@@ -1,4 +1,4 @@
-﻿namespace _Project.Scripts.Core
+﻿namespace _Project.Models
 {
     public enum SymbolType
     {

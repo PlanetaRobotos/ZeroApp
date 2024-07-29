@@ -1,81 +1,88 @@
 ﻿using System.Threading;
-using _Project.Scripts.Core;
-using _Project.Scripts.Core.Abstract;
-using _Project.Scripts.GameConstants;
-using _Project.Scripts.Infrastructure.States;
-using _Project.Scripts.UI.Mediators;
-using _Project.Scripts.Windows.BoardWidget.Tasks;
-using _Project.Scripts.Windows.HUD;
+using _Project.Core;
+using _Project.Core.Tasks;
+using _Project.GameConstants;
+using _Project.Models;
+using _Project.Models.Boards;
+using _Project.UI.Mediators;
+using _Project.Windows.BoardWidget.Factories;
+using _Project.Windows.BoardWidget.Task;
+using _Project.Windows.BoardWidget.Views;
 using Constellation.SceneManagement;
 using Cysharp.Threading.Tasks;
 using Fusion;
 using UnityEngine;
 using WindowsSystem.Core.Managers;
 
-public class NetworkPlayerHandler : NetworkBehaviour, IPlayerHandler
+namespace _Project.Networking
 {
-    [SerializeField] private NetworkBoard board;
-
-    public IBoard Board
+    public class NetworkPlayerHandler : NetworkBehaviour, IPlayerHandler
     {
-        get => board;
-        set => board = (NetworkBoard) value;
-    }
+        [SerializeField] private NetworkBoard board;
+        [Inject] private readonly IScenesManager _scenesManager;
+        [Inject] private IBoardFactory _boardFactory;
+        [Inject] private BaseUIMediator<BoardWindow> _boardWindowMediator;
+        [Inject] private IPlayerProfileProvider _playerProvider;
 
-    public IGameplayMediator GameplayMediator { get; set; }
+        [Inject] private WindowsController _windowsController;
 
-    [Inject] private WindowsController _windowsController;
-    [Inject] private readonly IScenesManager _scenesManager;
-    [Inject] private IPlayerProfileProvider _playerProvider;
-    [Inject] private BaseUIMediator<BoardWindow> _boardWindowMediator;
-    [Inject] private IBoardFactory _boardFactory;
-
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    private void StartGameRpc(SymbolType symbol, NetworkBool isInteractable)
-    {
-        StartGameAsync(symbol, isInteractable).Forget();
-    }
-
-    public UniTask StartGame(SymbolType symbol, NetworkBool isInteractable)
-    {
-        StartGameRpc(symbol, isInteractable);
-        return UniTask.CompletedTask;
-    }
-
-    private async UniTaskVoid StartGameAsync(SymbolType symbol, NetworkBool isInteractable)
-    {
-        Debug.Log($"Game started {symbol} - {isInteractable}");
-
-        var boardWidgetData = new BoardWidgetData
+        public IBoard Board
         {
-            BoardSize = _boardFactory.GridSize,
-            GameplayMediator = GameplayMediator
-        };
-
-        board.Initialize(boardWidgetData, GameplayMediator);
-        
-        await new LoadBoardWindowAsyncTask(boardWidgetData, CancellationToken.None).Do();
-        
-        _playerProvider.Symbol = symbol;
-        board.IsInteractive = isInteractable;
-        
-        Debug.Log($"Board window opened");
-    }
-    
-    public async UniTask EndGame(CancellationToken cancellationToken)
-    {
-        Debug.Log($"Game ended");
-
-        if (_windowsController.GetWindowById<BoardWindow>(WindowsConstants.BOARD_WINDOW))
-        {
-            _windowsController.CloseWindow(WindowsConstants.BOARD_WINDOW);
-            _boardWindowMediator.Dispose();
+            get => board;
+            set => board = (NetworkBoard)value;
         }
-        else
-            Debug.LogWarning("Board window not found");
 
-        await _scenesManager.LoadScene((byte)SceneLibraryConstants.MAIN_MENU, cancellationToken);
+        public IGameplayMediator GameplayMediator { get; set; }
 
-        await new SelectModeWindowAsyncTask().Do();
+        public UniTask StartGame(SymbolType symbol, NetworkBool isInteractable)
+        {
+            StartGameRpc(symbol, isInteractable);
+            return UniTask.CompletedTask;
+        }
+
+        public async UniTask EndGame(CancellationToken cancellationToken)
+        {
+            Debug.Log("Game ended");
+
+            if (_windowsController.GetWindowById<BoardWindow>(WindowsConstants.BOARD_WINDOW))
+            {
+                _windowsController.CloseWindow(WindowsConstants.BOARD_WINDOW);
+                _boardWindowMediator.Dispose();
+            }
+            else
+            {
+                Debug.LogWarning("Board window not found");
+            }
+
+            await _scenesManager.LoadScene((byte)SceneLibraryConstants.MAIN_MENU, cancellationToken);
+
+            await new SelectModeWindowAsyncTask().Do();
+        }
+
+        [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+        private void StartGameRpc(SymbolType symbol, NetworkBool isInteractable)
+        {
+            StartGameAsync(symbol, isInteractable).Forget();
+        }
+
+        private async UniTaskVoid StartGameAsync(SymbolType symbol, NetworkBool isInteractable)
+        {
+            Debug.Log($"Game started {symbol} - {isInteractable}");
+
+            BoardWidgetData boardWidgetData = new BoardWidgetData
+            {
+                BoardSize = _boardFactory.GridSize,
+                GameplayMediator = GameplayMediator
+            };
+
+            board.Initialize(boardWidgetData, GameplayMediator);
+
+            await new LoadBoardWindowAsyncTask(boardWidgetData, CancellationToken.None).Do();
+
+            _playerProvider.Symbol = symbol;
+            board.IsInteractive = isInteractable;
+
+            Debug.Log("Board window opened");
+        }
     }
 }

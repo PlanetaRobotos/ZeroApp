@@ -1,4 +1,6 @@
-﻿namespace _Project.Scripts.Core.Abstract
+﻿using _Project.Models;
+
+namespace _Project.Core
 {
     public interface IGameRules
     {

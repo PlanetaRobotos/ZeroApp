@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using WindowsSystem.Core;
 
-namespace _Project.Scripts.Windows.HUD
+namespace _Project.Windows.SelectModeWidget.Views
 {
     public class SelectModeWindow : BaseWindow
     {

@@ -1,4 +1,4 @@
-﻿namespace _Project.Scripts.Core.Abstract
+﻿namespace _Project.Core
 {
     public interface IGameTracker
     {

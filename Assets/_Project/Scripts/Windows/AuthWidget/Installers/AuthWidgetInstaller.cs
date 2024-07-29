@@ -1,14 +1,11 @@
-﻿using _Project.Scripts.UI.Mediators;
-using _Project.Scripts.Windows.AuthWidget;
-using _Project.Scripts.Windows.BoardWidget.Handlers;
-using _Project.Scripts.Windows.HUD;
+﻿using _Project.UI.Mediators;
+using _Project.Windows.AuthWidget.Mediators;
+using _Project.Windows.AuthWidget.Views;
 using ServiceLocator.Core;
-using UnityEngine;
-using UnityEngine.AddressableAssets;
 
-namespace _Project.Scripts.Windows.BoardWidget.Installers
+namespace _Project.Windows.AuthWidget.Installers
 {
-    public class AuthWidgetInstaller: BaseMonoServicesRegistrator
+    public class AuthWidgetInstaller : BaseMonoServicesRegistrator
     {
         public override void Register()
         {

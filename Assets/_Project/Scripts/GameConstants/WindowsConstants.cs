@@ -1,4 +1,4 @@
-namespace _Project.Scripts.GameConstants
+namespace _Project.GameConstants
 {
     public static class WindowsConstants
     {

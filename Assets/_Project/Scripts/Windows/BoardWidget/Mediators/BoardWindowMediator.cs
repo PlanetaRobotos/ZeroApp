@@ -1,26 +1,22 @@
 ﻿using System.Threading;
-using _Project.Scripts.Core;
-using _Project.Scripts.Core.Abstract;
-using _Project.Scripts.Models;
-using _Project.Scripts.UI.Mediators;
-using _Project.Scripts.Windows.BoardWidget.Handlers;
-using _Project.Scripts.Windows.HUD;
+using _Project.Core;
+using _Project.Models;
+using _Project.UI.Mediators;
+using _Project.Windows.BoardWidget.Handlers;
+using _Project.Windows.BoardWidget.Views;
 using Cysharp.Threading.Tasks;
-using MVVM;
 using UnityEngine;
-using WindowsSystem.Core;
 
-namespace _Project.Scripts.Windows.BoardWidget
+namespace _Project.Windows.BoardWidget.Mediators
 {
-    public class BoardWindowMediator: BaseUIMediator<BoardWindow>
+    public class BoardWindowMediator : BaseUIMediator<BoardWindow>
     {
-        private IGameplayMediator _gameplayMediator;
-        [Inject] private IPlayerProfileProvider _playerProvider;
-        
         private readonly BoardHandler _boardHandler;
-        
+
         private CellView _cellPrefab;
+        private IGameplayMediator _gameplayMediator;
         private GameObject _linePrefab;
+        [Inject] private IPlayerProfileProvider _playerProvider;
 
         public BoardWindowMediator(BoardHandler boardHandler)
         {
@@ -32,7 +28,7 @@ namespace _Project.Scripts.Windows.BoardWidget
             _gameplayMediator = View.Data.GameplayMediator;
             _cellPrefab = await _boardHandler.LoadCellView();
             _linePrefab = await _boardHandler.LoadLineView();
-            
+
             View.ExitButton.onClick.AddListener(OnQuitGameplay);
             View.GameResultView.QuitButton.onClick.AddListener(OnQuitGameplay);
             View.Data.OnPlayerWin += OnPlayerWin;
@@ -42,7 +38,7 @@ namespace _Project.Scripts.Windows.BoardWidget
         {
             View.BoardView.CreateBoard(_cellPrefab, OnCellClicked);
             View.BoardView.GenerateLines(_linePrefab);
-            
+
             return UniTask.CompletedTask;
         }
 
@@ -55,7 +51,7 @@ namespace _Project.Scripts.Windows.BoardWidget
         {
             _gameplayMediator.ExitSession();
         }
-        
+
         private void OnPlayerWin(SymbolType symbol)
         {
             View.SetActivePlayerTurnView(false);
@@ -69,7 +65,7 @@ namespace _Project.Scripts.Windows.BoardWidget
             View.ExitButton.onClick.RemoveListener(OnQuitGameplay);
             View.GameResultView.QuitButton.onClick.RemoveListener(OnQuitGameplay);
             View.Data.OnPlayerWin -= OnPlayerWin;
-            
+
             return UniTask.CompletedTask;
         }
     }

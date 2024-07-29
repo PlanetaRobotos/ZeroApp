@@ -1,7 +1,7 @@
 ﻿using System;
-using _Project.Scripts.Models;
+using _Project.Models;
 
-namespace _Project.Scripts.Core.Abstract
+namespace _Project.Core
 {
     public interface IPlayerProfileProvider
     {

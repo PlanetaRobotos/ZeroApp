@@ -1,29 +1,29 @@
-﻿using _Project.Scripts.Core;
-using _Project.Scripts.Core.Abstract;
-using _Project.Scripts.Data;
-using _Project.Scripts.Models;
-using _Project.Scripts.Windows.HUD;
+﻿using _Project.Core;
+using _Project.Core.Boards;
+using _Project.Models;
+using _Project.Models.Boards;
+using _Project.Windows.BoardWidget.Factories;
 using Cysharp.Threading.Tasks;
 using Galaxy4Games.Utils;
 using Logging;
 using UnityEngine;
 
-namespace _Project.Scripts.AI
+namespace _Project.AI
 {
     public class AIBoard : IBoard
     {
         private readonly MinMaxValue MinMaxAISecDelay = new(1, 2.5f);
+        [Inject] private IBoardFactory _boardFactory;
 
         private BoardWidgetData _boardWidgetData;
-
-        [Inject] private ICustomLogger _logger;
         [Inject] private IGameRules _gameRules;
-        [Inject] private IBoardFactory _boardFactory;
-        [Inject] private IPlayerProfileProvider _playerProvider;
         [Inject] private IGameTracker _gameTracker;
 
         private int _gridSize;
         private bool _isInteract;
+
+        [Inject] private ICustomLogger _logger;
+        [Inject] private IPlayerProfileProvider _playerProvider;
 
         public SymbolType[,] Grid { get; private set; }
 
@@ -43,52 +43,10 @@ namespace _Project.Scripts.AI
                 FakeAIMove().Forget();
         }
 
-        private async UniTask FakeAIMove()
+        public void SetInteract(bool isInteractable)
         {
-            await UniTask.Delay((int)Random.Range(MinMaxAISecDelay.min, MinMaxAISecDelay.max) * 1000);
-
-            var isEmptyCellFound = Grid.GetRandomEmptyCell(out Vector2Int cell);
-            var row = cell.x;
-            var column = cell.y;
-            var symbol = _playerProvider.Symbol == SymbolType.Cross ? SymbolType.Circle : SymbolType.Cross;
-
-            if (isEmptyCellFound)
-            {
-                if (!IsCellEmpty(row, column))
-                {
-                    Debug.Log($"Cell {row} - {column} is not empty");
-                    return;
-                }
-
-                Grid[row, column] = symbol;
-
-                if (_gameRules.CheckWin(Grid, symbol))
-                {
-                    Debug.Log($"Player {symbol} wins");
-
-                    _boardWidgetData.OnPlayerWin?.Invoke(symbol);
-                    IsInteractive = false;
-                }
-
-                if (_gameRules.CheckDraw(this))
-                {
-                    Debug.Log("Draw");
-                    _boardWidgetData.OnDraw?.Invoke();
-                    IsInteractive = false;
-                }
-
-                _boardWidgetData.OnBoardChanged?.Invoke(Grid);
-
-                IsInteractive = true;
-            }
-            else
-            {
-                _logger.LogError("No empty cell found");
-            }
-        }
-
-        public void SetInteract(bool isInteractable) =>
             IsInteractive = isInteractable;
+        }
 
         public void PlaceSymbol(int row, int column, SymbolType symbol, out ResultType result)
         {
@@ -123,18 +81,23 @@ namespace _Project.Scripts.AI
 
             _boardWidgetData.OnBoardChanged?.Invoke(Grid);
 
-            if (symbol == _playerProvider.Symbol)
-            {
-                IsInteractive = false;
-            }
+            if (symbol == _playerProvider.Symbol) IsInteractive = false;
         }
 
-        public bool IsCellEmpty(int row, int column) =>
-            Grid.IsCellEmpty(row, column);
+        public bool IsCellEmpty(int row, int column)
+        {
+            return Grid.IsCellEmpty(row, column);
+        }
 
-        public bool IsFull() => Grid.IsFull();
+        public bool IsFull()
+        {
+            return Grid.IsFull();
+        }
 
-        public void Reset() => this.ResetGrid();
+        public void Reset()
+        {
+            this.ResetGrid();
+        }
 
         public bool IsInteractive
         {
@@ -147,6 +110,50 @@ namespace _Project.Scripts.AI
                 _boardWidgetData.OnPlayerTurn?.Invoke(value);
 
                 _isInteract = value;
+            }
+        }
+
+        private async UniTask FakeAIMove()
+        {
+            await UniTask.Delay((int)Random.Range(MinMaxAISecDelay.min, MinMaxAISecDelay.max) * 1000);
+
+            bool isEmptyCellFound = Grid.GetRandomEmptyCell(out Vector2Int cell);
+            int row = cell.x;
+            int column = cell.y;
+            SymbolType symbol = _playerProvider.Symbol == SymbolType.Cross ? SymbolType.Circle : SymbolType.Cross;
+
+            if (isEmptyCellFound)
+            {
+                if (!IsCellEmpty(row, column))
+                {
+                    Debug.Log($"Cell {row} - {column} is not empty");
+                    return;
+                }
+
+                Grid[row, column] = symbol;
+
+                if (_gameRules.CheckWin(Grid, symbol))
+                {
+                    Debug.Log($"Player {symbol} wins");
+
+                    _boardWidgetData.OnPlayerWin?.Invoke(symbol);
+                    IsInteractive = false;
+                }
+
+                if (_gameRules.CheckDraw(this))
+                {
+                    Debug.Log("Draw");
+                    _boardWidgetData.OnDraw?.Invoke();
+                    IsInteractive = false;
+                }
+
+                _boardWidgetData.OnBoardChanged?.Invoke(Grid);
+
+                IsInteractive = true;
+            }
+            else
+            {
+                _logger.LogError("No empty cell found");
             }
         }
     }

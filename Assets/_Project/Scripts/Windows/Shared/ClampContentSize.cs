@@ -1,30 +1,30 @@
 ﻿using UnityEngine;
 
-namespace _Project.Scripts.Windows.Shared
+namespace _Project.Windows.Shared
 {
     [RequireComponent(typeof(RectTransform))]
     public class ClampContentSize : MonoBehaviour
     {
         [SerializeField] private RectTransform _targetRT;
+        private float _maxHeight;
+        private float _minHeight;
 
         private RectTransform _rt;
-        private float _minHeight;
-        private float _maxHeight;
 
         private RectTransform TargetRT =>
             _targetRT ? _targetRT : _rt;
 
-        public void Init(float minHeight, float maxHeight)
-        {
-            _rt = GetComponent<RectTransform>();
-            
-            _minHeight = minHeight;
-            _maxHeight = maxHeight;
-        }
-
         private void FixedUpdate()
         {
             HandleSize();
+        }
+
+        public void Init(float minHeight, float maxHeight)
+        {
+            _rt = GetComponent<RectTransform>();
+
+            _minHeight = minHeight;
+            _maxHeight = maxHeight;
         }
 
         public void HandleSize()

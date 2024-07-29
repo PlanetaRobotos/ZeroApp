@@ -1,10 +1,10 @@
 ﻿using System;
-using _Project.Scripts.Models;
+using _Project.Models;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace _Project.Scripts.Windows.AuthWidget
+namespace _Project.Windows.AuthWidget.Views
 {
     public class SignInView : MonoBehaviour
     {
@@ -16,10 +16,29 @@ namespace _Project.Scripts.Windows.AuthWidget
 
         [SerializeField] private TMP_Text _errorText;
 
-        public TMP_Text ErrorText => _errorText;
-
         private Action _onBackButtonClick;
         private Func<SignUpModel, string> _onSignInButtonClick;
+
+        public TMP_Text ErrorText => _errorText;
+
+        private void Reset()
+        {
+            _usernameInput.text = "";
+            _passwordInput.text = "";
+            _errorText.text = "";
+        }
+
+        private void OnEnable()
+        {
+            _backButton.onClick.AddListener(OnBackButtonClick);
+            _approveButton.onClick.AddListener(OnSignInButtonClick);
+        }
+
+        private void OnDisable()
+        {
+            _backButton.onClick.RemoveListener(OnBackButtonClick);
+            _approveButton.onClick.RemoveListener(OnSignInButtonClick);
+        }
 
         public void Initialize(Action onBackButtonClick, Func<SignUpModel, string> onSignInButtonClick)
         {
@@ -27,12 +46,6 @@ namespace _Project.Scripts.Windows.AuthWidget
             _onSignInButtonClick = onSignInButtonClick;
 
             Reset();
-        }
-
-        private void OnEnable()
-        {
-            _backButton.onClick.AddListener(OnBackButtonClick);
-            _approveButton.onClick.AddListener(OnSignInButtonClick);
         }
 
         private void OnBackButtonClick()
@@ -50,19 +63,6 @@ namespace _Project.Scripts.Windows.AuthWidget
                 Username = _usernameInput.text,
                 Password = _passwordInput.text
             });
-        }
-
-        private void Reset()
-        {
-            _usernameInput.text = "";
-            _passwordInput.text = "";
-            _errorText.text = "";
-        }
-
-        private void OnDisable()
-        {
-            _backButton.onClick.RemoveListener(OnBackButtonClick);
-            _approveButton.onClick.RemoveListener(OnSignInButtonClick);
         }
     }
 }

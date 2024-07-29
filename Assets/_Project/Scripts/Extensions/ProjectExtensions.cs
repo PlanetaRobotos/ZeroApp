@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace _Project.Scripts.Extensions
+namespace _Project.Extensions
 {
     public static class ProjectExtensions
     {
@@ -27,7 +27,7 @@ namespace _Project.Scripts.Extensions
                 return false;
             }
         }
-        
+
         public static bool IsValidPassword(this string password, out string error)
         {
             error = string.Empty;
@@ -41,7 +41,7 @@ namespace _Project.Scripts.Extensions
             error = $"Password must be at least {MinPasswordLength} characters long.";
             return password.Length >= MinPasswordLength;
         }
-        
+
         public static bool IsValidUsername(this string username, out string error)
         {
             bool isValidUsername = !string.IsNullOrEmpty(username);

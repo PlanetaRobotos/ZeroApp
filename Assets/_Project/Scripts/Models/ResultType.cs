@@ -1,4 +1,4 @@
-﻿namespace _Project.Scripts.Models
+﻿namespace _Project.Models
 {
     public enum ResultType
     {

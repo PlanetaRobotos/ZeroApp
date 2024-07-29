@@ -1,21 +1,20 @@
 ﻿using System.Threading;
-using _Project.Scripts.Core;
-using _Project.Scripts.GameConstants;
+using _Project.GameConstants;
+using _Project.Models.Boards;
 using _Project.Scripts.Infrastructure.Extensions.AsyncExtensions;
-using _Project.Scripts.UI.Mediators;
-using _Project.Scripts.Windows.HUD;
+using _Project.UI.Mediators;
+using _Project.Windows.BoardWidget.Views;
 using Cysharp.Threading.Tasks;
 using WindowsSystem.Core.Managers;
 
-namespace _Project.Scripts.Windows.BoardWidget.Tasks
+namespace _Project.Windows.BoardWidget.Task
 {
-    public class LoadBoardWindowAsyncTask: AsyncTask
+    public class LoadBoardWindowAsyncTask : AsyncTask
     {
-        [Inject] private BaseUIMediator<BoardWindow> _boardWindowMediator;
-        [Inject] private WindowsController _windowsController;
-        
         private readonly BoardWidgetData _boardWidgetData;
         private readonly CancellationToken _cancellationToken;
+        [Inject] private BaseUIMediator<BoardWindow> _boardWindowMediator;
+        [Inject] private WindowsController _windowsController;
 
         public LoadBoardWindowAsyncTask(BoardWidgetData boardWidgetData, CancellationToken cancellationToken)
         {
@@ -25,7 +24,7 @@ namespace _Project.Scripts.Windows.BoardWidget.Tasks
 
         protected override async UniTask DoAsync()
         {
-            var boardWindow = await _windowsController.OpenWindowAsync<BoardWindow>(
+            BoardWindow boardWindow = await _windowsController.OpenWindowAsync<BoardWindow>(
                 WindowsConstants.BOARD_WINDOW, _boardWidgetData, true);
             await _boardWindowMediator.InitializeMediator(boardWindow, _cancellationToken);
             await _boardWindowMediator.RunMediator(_cancellationToken);

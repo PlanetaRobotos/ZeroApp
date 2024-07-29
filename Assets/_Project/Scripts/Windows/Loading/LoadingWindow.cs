@@ -1,22 +1,22 @@
 using _Project.Scripts.Infrastructure.Extensions;
-using _Project.Scripts.Windows.Loading.Providers;
+using _Project.Windows.Loading.Providers;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 using WindowsSystem.Core;
 using WindowsSystem.Core.Managers;
 
-namespace _Project.Scripts.Windows.Loading
+namespace _Project.Windows.Loading
 {
     public class LoadingWindow : BaseWindow
     {
         [SerializeField] private Button _screenButton;
         [SerializeField] private Transform _loadingViewParent;
 
+        private int _clicksCounter;
+
         [Inject] private ILoadingScreenProvider LoadingScreenProvider { get; }
         [Inject] private WindowsController WindowsController { get; }
-        
-        private int _clicksCounter;
 
         public override void OnOpen()
         {
@@ -24,7 +24,7 @@ namespace _Project.Scripts.Windows.Loading
 
             CloseWithDelay().Forget();
         }
-        
+
         private async UniTaskVoid CloseWithDelay()
         {
             // await UniTask.Delay(1);
@@ -38,7 +38,7 @@ namespace _Project.Scripts.Windows.Loading
 
         private void CreateLoadingView()
         {
-            var screen = LoadingScreenProvider.GetScreen(_loadingViewParent).transform;
+            Transform screen = LoadingScreenProvider.GetScreen(_loadingViewParent).transform;
             screen.transform.name = "LoadingBackground";
             screen.SetParentInZeroPosition(_loadingViewParent);
         }
