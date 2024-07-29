@@ -1,26 +1,27 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace _Project.Scripts.Windows.Shared
+namespace _Project.Windows.Shared
 {
     [RequireComponent(typeof(Image))]
     public class FitImageByHeight : MonoBehaviour
     {
-        void Start()
+        private void Start()
         {
-            var myImage = GetComponent<Image>();
-            var myRectTransform = GetComponent<RectTransform>();
+            Image myImage = GetComponent<Image>();
+            RectTransform myRectTransform = GetComponent<RectTransform>();
 
             // Assuming the canvas is using Screen Space - Overlay
             // If using Screen Space - Camera, you might need to adjust this calculation
-            float screenAspect = (float)Screen.height / (float)Screen.width;
+            float screenAspect = Screen.height / (float)Screen.width;
             float imageAspect = myImage.sprite.bounds.size.y / myImage.sprite.bounds.size.x;
 
             if (screenAspect > imageAspect)
             {
                 // Screen is taller than the image's aspect ratio
                 float scaleFactor = screenAspect / imageAspect;
-                myRectTransform.sizeDelta = new Vector2(myRectTransform.sizeDelta.x * scaleFactor, myRectTransform.sizeDelta.y);
+                myRectTransform.sizeDelta =
+                    new Vector2(myRectTransform.sizeDelta.x * scaleFactor, myRectTransform.sizeDelta.y);
             }
             else
             {

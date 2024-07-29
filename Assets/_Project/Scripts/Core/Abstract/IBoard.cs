@@ -1,7 +1,7 @@
-﻿using _Project.Scripts.Data;
-using _Project.Scripts.Models;
+﻿using _Project.Models;
+using _Project.Models.Boards;
 
-namespace _Project.Scripts.Core.Abstract
+namespace _Project.Core
 {
     public interface IBoard
     {

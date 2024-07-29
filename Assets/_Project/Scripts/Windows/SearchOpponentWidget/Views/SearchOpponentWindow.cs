@@ -2,12 +2,12 @@
 using UnityEngine;
 using WindowsSystem.Core;
 
-namespace _Project.Scripts.Windows.SearchOpponentWidget.Views
+namespace _Project.Windows.SearchOpponentWidget.Views
 {
-    public class SearchOpponentWindow: BaseWindow
+    public class SearchOpponentWindow : BaseWindow
     {
         [SerializeField] private TMP_Text _waitingText;
-        
+
         public override void OnOpen()
         {
             SetActiveWaitView(true);

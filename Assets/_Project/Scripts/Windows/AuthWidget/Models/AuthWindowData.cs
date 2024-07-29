@@ -1,12 +1,12 @@
 ﻿using System;
-using _Project.Scripts.Models;
+using _Project.Models;
 using WindowsSystem.Core;
 
-namespace _Project.Scripts.Windows.AuthWidget
+namespace _Project.Windows.AuthWidget.Models
 {
     public class AuthWindowData : IncomingData
     {
-        public Action<SignUpModel> OnCompleteSignUp;
         public Action<SignUpModel> OnCompleteSignIn;
+        public Action<SignUpModel> OnCompleteSignUp;
     }
 }

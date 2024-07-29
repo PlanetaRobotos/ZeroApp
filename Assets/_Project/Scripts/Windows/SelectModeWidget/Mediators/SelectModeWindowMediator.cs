@@ -1,23 +1,17 @@
 ﻿using System.Threading;
-using _Project.Scripts.AI;
-using _Project.Scripts.Core;
-using _Project.Scripts.Core.Abstract;
+using _Project.AI;
+using _Project.Core;
+using _Project.Networking;
 using _Project.Scripts.Infrastructure;
-using _Project.Scripts.Models;
-using _Project.Scripts.Networking;
-using _Project.Scripts.UI.Mediators;
-using _Project.Scripts.Windows.BoardWidget.Handlers;
-using _Project.Scripts.Windows.HUD;
+using _Project.UI.Mediators;
+using _Project.Windows.SelectModeWidget.Views;
 using Cysharp.Threading.Tasks;
-using MVVM;
-using UniRx;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using WindowsSystem.Core;
 
-namespace _Project.Scripts.Windows.BoardWidget
+namespace _Project.Windows.SelectModeWidget.Mediators
 {
-    public class SelectModeWindowMediator: BaseUIMediator<SelectModeWindow>
+    public class SelectModeWindowMediator : BaseUIMediator<SelectModeWindow>
     {
         private readonly AssetReference _boardCellRef;
         private NetworkPlayerHandler _networkPlayer;
@@ -40,11 +34,15 @@ namespace _Project.Scripts.Windows.BoardWidget
             return UniTask.CompletedTask;
         }
 
-        private void MultiplayerModeSelected() => 
+        private void MultiplayerModeSelected()
+        {
             OnModeSelected(new PhotonGameplayMediator(_networkPlayer)).Forget();
-        
-        private void AIModeSelected() =>
+        }
+
+        private void AIModeSelected()
+        {
             OnModeSelected(new AIGameplayMediator()).Forget();
+        }
 
         private async UniTask OnModeSelected(IGameplayMediator gameplayMediator)
         {
@@ -52,10 +50,10 @@ namespace _Project.Scripts.Windows.BoardWidget
             gameplayMediator.StartGame();
             Dispose();
         }
-        
+
         private async UniTask<NetworkPlayerHandler> LoadNetworkPlayer()
         {
-            var player = await _boardCellRef.LoadAssetAsyncOnce<GameObject>();
+            GameObject player = await _boardCellRef.LoadAssetAsyncOnce<GameObject>();
             if (player == null)
             {
                 Debug.LogError("BoardCell is not loaded");
@@ -64,12 +62,12 @@ namespace _Project.Scripts.Windows.BoardWidget
 
             return player.GetComponent<NetworkPlayerHandler>();
         }
-        
+
         protected override UniTask DisposeMediator()
         {
             View.MultiplayerModeButton.onClick.RemoveListener(MultiplayerModeSelected);
             View.AiModeButton.onClick.RemoveListener(AIModeSelected);
-            
+
             return UniTask.CompletedTask;
         }
     }

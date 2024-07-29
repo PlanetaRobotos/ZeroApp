@@ -1,8 +1,9 @@
-﻿using _Project.Scripts.Core.Abstract;
-using _Project.Scripts.Core.Auth;
+﻿using _Project.Core.Auth;
+using _Project.Core.Providers;
+using _Project.Core.Trackers;
 using ServiceLocator.Core;
 
-namespace _Project.Scripts.Core.Registrators
+namespace _Project.Core.Registrators
 {
     public class PlayerRegistrator : BaseMonoServicesRegistrator
     {

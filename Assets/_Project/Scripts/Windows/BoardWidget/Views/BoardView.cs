@@ -1,12 +1,11 @@
 ﻿using System;
-using _Project.Scripts.Core;
-using _Project.Scripts.Core.Abstract;
-using _Project.Scripts.Data;
+using _Project.Models;
+using _Project.Windows.BoardWidget.Factories;
 using Logging;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace _Project.Scripts.Windows.HUD
+namespace _Project.Windows.BoardWidget.Views
 {
     public class BoardView : MonoBehaviour, IDisposable
     {
@@ -14,11 +13,16 @@ namespace _Project.Scripts.Windows.HUD
         [SerializeField] private Transform linesParent;
         [SerializeField] private GridLayoutGroup _gridLayoutGroup;
 
-        private CellView[,] _cells;
-        private ICustomLogger _logger;
+        [Inject] private IBoardFactory _boardFactory;
         private BoardWindow _boardWindow;
 
-        [Inject] private IBoardFactory _boardFactory;
+        private CellView[,] _cells;
+        private ICustomLogger _logger;
+
+        public void Dispose()
+        {
+            foreach (CellView cell in _cells) cell.Unsubscribe();
+        }
 
         public void Construct(ICustomLogger logger)
         {
@@ -50,12 +54,10 @@ namespace _Project.Scripts.Windows.HUD
         {
             IterateCells((i, j) =>
             {
-                var symbolType = grid[i, j];
+                SymbolType symbolType = grid[i, j];
                 bool isSpriteFound = _boardFactory.GetSpriteByType(symbolType);
                 if (isSpriteFound)
-                {
                     _cells[i, j].SetSymbolSprite(_boardFactory.GetSpriteByType(symbolType), symbolType);
-                }
                 else _logger.LogError("Sprite not found for symbol type: " + symbolType);
             });
         }
@@ -67,17 +69,9 @@ namespace _Project.Scripts.Windows.HUD
 
         private void IterateCells(Action<int, int> action)
         {
-            for (int i = 0; i < _cells.GetLength(0); i++)
-            for (int j = 0; j < _cells.GetLength(1); j++)
+            for (var i = 0; i < _cells.GetLength(0); i++)
+            for (var j = 0; j < _cells.GetLength(1); j++)
                 action(i, j);
-        }
-
-        public void Dispose()
-        {
-            foreach (var cell in _cells)
-            {
-                cell.Unsubscribe();
-            }
         }
     }
 }

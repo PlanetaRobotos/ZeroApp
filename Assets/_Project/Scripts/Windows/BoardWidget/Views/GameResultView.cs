@@ -1,18 +1,18 @@
-﻿using _Project.Scripts.Models;
+﻿using _Project.Models;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace _Project.Scripts.Windows.HUD
+namespace _Project.Windows.BoardWidget.Views
 {
-    public class GameResultView: MonoBehaviour
+    public class GameResultView : MonoBehaviour
     {
         [SerializeField] private TMP_Text _resultText;
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private Button _quitButton;
-        
+
         public Button QuitButton => _quitButton;
-        
+
         public void SetResultText(ResultType resultType)
         {
             switch (resultType)

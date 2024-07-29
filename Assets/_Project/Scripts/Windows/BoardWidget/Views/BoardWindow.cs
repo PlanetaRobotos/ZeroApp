@@ -1,12 +1,12 @@
-﻿using _Project.Scripts.Core;
-using _Project.Scripts.Models;
+﻿using _Project.Models;
+using _Project.Models.Boards;
 using Logging;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using WindowsSystem.Core;
 
-namespace _Project.Scripts.Windows.HUD
+namespace _Project.Windows.BoardWidget.Views
 {
     public class BoardWindow : BaseWindow<BoardWidgetData>
     {
@@ -16,23 +16,23 @@ namespace _Project.Scripts.Windows.HUD
 
         [SerializeField] private BoardView _boardView;
         [SerializeField] private GameResultView _gameResultView;
-        
+
+        [Inject] private ICustomLogger _logger;
+
         public Button ExitButton => _exitButton;
         public BoardView BoardView => _boardView;
         public GameResultView GameResultView => _gameResultView;
 
-        [Inject] private ICustomLogger _logger;
-        
         public override void OnOpen()
         {
             _boardView.Construct(_logger);
             _boardView.Initialize(Data.BoardSize);
-            
+
             Data.OnBoardChanged += OnBoardChanged;
             Data.OnPlayerTurn += OnPlayerTurn;
             Data.OnDraw += OnDraw;
             Data.OnInteractiveChanged += OnInteractiveChanged;
-            
+
             GameResultView.SetActive(false);
             SetActivePlayerTurnView(true);
         }
@@ -43,10 +43,10 @@ namespace _Project.Scripts.Windows.HUD
             Data.OnPlayerTurn -= OnPlayerTurn;
             Data.OnDraw -= OnDraw;
             Data.OnInteractiveChanged -= OnInteractiveChanged;
-            
+
             base.Close();
         }
-        
+
         private void OnInteractiveChanged(bool isInteractive)
         {
             _boardCanvasGroup.interactable = isInteractive;
@@ -55,7 +55,7 @@ namespace _Project.Scripts.Windows.HUD
         private void OnDraw()
         {
             SetActivePlayerTurnView(false);
-            
+
             GameResultView.SetActive(true);
             ExitButton.gameObject.SetActive(false);
             _gameResultView.SetResultText(ResultType.Draw);
@@ -65,18 +65,18 @@ namespace _Project.Scripts.Windows.HUD
         {
             playerTurnText.gameObject.SetActive(isActive);
         }
-        
+
         private void OnBoardChanged(SymbolType[,] grid)
         {
             _boardView.UpdateBoard(grid);
         }
-        
+
         private void OnPlayerTurn(bool isPlayerTurn)
         {
             UpdatePlayerTurnText(isPlayerTurn);
         }
-        
-        void UpdatePlayerTurnText(bool isPlayerTurn)
+
+        private void UpdatePlayerTurnText(bool isPlayerTurn)
         {
             playerTurnText.text = isPlayerTurn ? "Your turn" : "Opponent's turn";
         }

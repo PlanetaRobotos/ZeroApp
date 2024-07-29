@@ -1,7 +1,8 @@
-﻿using GameTasks.Core;
+﻿using _Project.Scripts.Infrastructure;
+using GameTasks.Core;
 using Services.States;
 
-namespace _Project.Scripts.Infrastructure.States
+namespace _Project.GameStates
 {
     public class GameplayState : IState
     {

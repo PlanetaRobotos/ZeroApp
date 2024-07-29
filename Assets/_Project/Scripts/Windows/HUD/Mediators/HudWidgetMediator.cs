@@ -1,19 +1,17 @@
 ﻿using System.Threading;
-using _Project.Scripts.Core.Abstract;
-using _Project.Scripts.Core.Auth;
-using _Project.Scripts.Infrastructure.States;
-using _Project.Scripts.UI.Mediators;
-using _Project.Scripts.Windows.HUD;
+using _Project.Core;
+using _Project.Core.Tasks;
+using _Project.UI.Mediators;
+using _Project.Windows.HUD.Views;
 using Cysharp.Threading.Tasks;
-using GameTasks.Core;
 
-namespace _Project.Scripts.Windows.BoardWidget
+namespace _Project.Windows.HUD.Mediators
 {
     public class HudWidgetMediator : BaseUIMediator<HUDWindow>
     {
         [Inject] private IAuthProvider _authProvider;
         [Inject] private IPlayerProfileProvider PlayerProvider { get; }
-        
+
         protected override UniTask InitializeMediator(CancellationToken cancellationToken)
         {
             View.SignOutButton.onClick.AddListener(OnSignOut);
@@ -25,7 +23,7 @@ namespace _Project.Scripts.Windows.BoardWidget
         {
             return UniTask.CompletedTask;
         }
-        
+
         private void OnSignOut()
         {
             _authProvider.SignOut();

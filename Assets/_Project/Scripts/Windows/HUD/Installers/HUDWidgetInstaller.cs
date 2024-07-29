@@ -1,10 +1,11 @@
-﻿using _Project.Scripts.UI.Mediators;
-using _Project.Scripts.Windows.HUD;
+﻿using _Project.UI.Mediators;
+using _Project.Windows.HUD.Mediators;
+using _Project.Windows.HUD.Views;
 using ServiceLocator.Core;
 
-namespace _Project.Scripts.Windows.BoardWidget.Installers
+namespace _Project.Windows.HUD.Installers
 {
-    public class HUDWidgetInstaller: BaseMonoServicesRegistrator
+    public class HUDWidgetInstaller : BaseMonoServicesRegistrator
     {
         public override void Register()
         {

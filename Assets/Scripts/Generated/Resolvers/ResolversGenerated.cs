@@ -1,18 +1,4 @@
 using System; using System.Collections.Generic;using MVVM;using UnityEngine; namespace MVVM.Generated{    
-                public class Resolver__Project_Scripts_Currencies_Views_BaseCurrencyView: IResolver
-                {
-                        private Dictionary<string, Func<_Project.Scripts.Currencies.Views.BaseCurrencyView, IReactiveProperty>> map = new()
-                        {
-                            { "AmountChanged", o => o.AmountChanged },
-{ "SmoothAmount", o => o.SmoothAmount },
-                        };
-
-                        public IReactiveProperty Map(UnityEngine.Object target, string name)
-                        {
-                            return map[name].Invoke(target as _Project.Scripts.Currencies.Views.BaseCurrencyView);
-                        }
-                }
-                    
                 public class Resolver__Project_Scripts_Infrastructure_ReactiveAnimations_TestVM: IResolver
                 {
                         private Dictionary<string, Func<_Project.Scripts.Infrastructure.ReactiveAnimations.TestVM, IReactiveProperty>> map = new()
@@ -33,8 +19,7 @@ using System; using System.Collections.Generic;using MVVM;using UnityEngine; nam
             {
                 Binders.AddResolvers(new()
                 {
-                    {typeof(_Project.Scripts.Currencies.Views.BaseCurrencyView),new Resolver__Project_Scripts_Currencies_Views_BaseCurrencyView()},
-{typeof(_Project.Scripts.Infrastructure.ReactiveAnimations.TestVM),new Resolver__Project_Scripts_Infrastructure_ReactiveAnimations_TestVM()},    
+                    {typeof(_Project.Scripts.Infrastructure.ReactiveAnimations.TestVM),new Resolver__Project_Scripts_Infrastructure_ReactiveAnimations_TestVM()},    
                 });
             }
         }}

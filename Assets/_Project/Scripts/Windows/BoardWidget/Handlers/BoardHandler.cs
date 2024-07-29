@@ -1,11 +1,10 @@
-﻿using _Project.Scripts.Data;
+﻿using _Project.Scripts.Infrastructure;
+using _Project.Windows.BoardWidget.Views;
 using Cysharp.Threading.Tasks;
-using UnityEngine.AddressableAssets;
-using _Project.Scripts.Infrastructure;
-using _Project.Scripts.Windows.HUD;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
-namespace _Project.Scripts.Windows.BoardWidget.Handlers
+namespace _Project.Windows.BoardWidget.Handlers
 {
     public class BoardHandler
     {
@@ -20,7 +19,7 @@ namespace _Project.Scripts.Windows.BoardWidget.Handlers
 
         public async UniTask<CellView> LoadCellView()
         {
-            var boardCell = await _boardCellRef.LoadAssetAsyncOnce<GameObject>();
+            GameObject boardCell = await _boardCellRef.LoadAssetAsyncOnce<GameObject>();
             if (boardCell == null)
             {
                 Debug.LogError("BoardCell is not loaded");
@@ -29,10 +28,10 @@ namespace _Project.Scripts.Windows.BoardWidget.Handlers
 
             return boardCell.GetComponent<CellView>();
         }
-        
+
         public async UniTask<GameObject> LoadLineView()
         {
-            var line = await _lineRef.LoadAssetAsyncOnce<GameObject>();
+            GameObject line = await _lineRef.LoadAssetAsyncOnce<GameObject>();
             if (line == null)
             {
                 Debug.LogError("Line is not loaded");

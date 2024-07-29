@@ -1,7 +1,7 @@
-using _Project.Scripts.Windows.Loading.Views;
+using _Project.Windows.Loading.Views;
 using UnityEngine;
 
-namespace _Project.Scripts.Windows.Loading.Providers
+namespace _Project.Windows.Loading.Providers
 {
     public class LoadingScreenFromResourcesProvider : ILoadingScreenProvider
     {
@@ -22,7 +22,7 @@ namespace _Project.Scripts.Windows.Loading.Providers
             return _currentScreenView;
         }
     }
-    
+
     public class LoadingScreenProvider : ILoadingScreenProvider
     {
         private readonly LoadingScreenView _template;

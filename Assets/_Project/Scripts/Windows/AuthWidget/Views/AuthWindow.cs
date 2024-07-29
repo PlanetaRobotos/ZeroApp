@@ -1,13 +1,12 @@
-﻿using System.Text.RegularExpressions;
-using _Project.Scripts.Extensions;
-using _Project.Scripts.Models;
-using TMPro;
+﻿using _Project.Extensions;
+using _Project.Models;
+using _Project.Windows.AuthWidget.Models;
 using UnityEngine;
 using WindowsSystem.Core;
 
-namespace _Project.Scripts.Windows.AuthWidget
+namespace _Project.Windows.AuthWidget.Views
 {
-    public class AuthWindow: BaseWindow<AuthWindowData>
+    public class AuthWindow : BaseWindow<AuthWindowData>
     {
         [SerializeField] private SelectAuthView _selectView;
         [SerializeField] private SignInView _signInView;
@@ -24,8 +23,8 @@ namespace _Project.Scripts.Windows.AuthWidget
 
         private string OnSignUpApprove(SignUpModel signUpModel)
         {
-            string statusText = "Success!";
-            
+            var statusText = "Success!";
+
             if (!signUpModel.Email.IsValidEmail(out string emailError))
             {
                 statusText = emailError;
@@ -47,11 +46,11 @@ namespace _Project.Scripts.Windows.AuthWidget
             Data.OnCompleteSignUp?.Invoke(signUpModel);
             return statusText;
         }
-        
+
         private string OnSignInApprove(SignUpModel signInModel)
         {
-            string statusText = "";
-            
+            var statusText = "";
+
             if (!signInModel.Username.IsValidUsername(out string usernameError))
             {
                 statusText = usernameError;
@@ -74,14 +73,14 @@ namespace _Project.Scripts.Windows.AuthWidget
             _signInView.gameObject.SetActive(false);
             _signUpView.gameObject.SetActive(false);
         }
-        
+
         private void OnSignIn()
         {
             _selectView.gameObject.SetActive(false);
             _signInView.gameObject.SetActive(true);
             _signUpView.gameObject.SetActive(false);
         }
-        
+
         private void OnSignUp()
         {
             _selectView.gameObject.SetActive(false);

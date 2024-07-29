@@ -1,7 +1,7 @@
-﻿using _Project.Scripts.Models;
+﻿using _Project.Models;
 using Cysharp.Threading.Tasks;
 
-namespace _Project.Scripts.Core.Auth
+namespace _Project.Core
 {
     public interface IAuthProvider
     {

@@ -1,10 +1,10 @@
-﻿using _Project.Scripts.Core.Abstract;
+﻿using _Project.Core;
 using QFSW.QC;
 using UnityEngine;
 
-namespace _Project.Scripts.Cheats
+namespace _Project.Cheats
 {
-    public class CheatsProvider: MonoBehaviour
+    public class CheatsProvider : MonoBehaviour
     {
         [Inject] private IGameTracker _gameTracker { get; }
 
@@ -14,15 +14,15 @@ namespace _Project.Scripts.Cheats
         private void RecordWin()
         {
             Debug.Log("Win recorded");
-            
+
             _gameTracker.RecordWin();
         }
-        
+
         [Command("reset-wins", "Resets wins amount")]
         private void ResetWinsAmount()
         {
             Debug.Log("Wins amount reset");
-            
+
             _gameTracker.ResetWinsAmount();
         }
 
