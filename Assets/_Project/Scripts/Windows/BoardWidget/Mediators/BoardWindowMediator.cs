@@ -14,7 +14,7 @@ namespace _Project.Scripts.Windows.BoardWidget
 {
     public class BoardWindowMediator: BaseUIMediator<BoardWindow>
     {
-        [Inject] private PhotonManager _photonManager;
+        private IGameplayMediator _gameplayMediator;
         [Inject] private IPlayerProfileProvider _playerProvider;
         
         private readonly BoardHandler _boardHandler;
@@ -29,6 +29,7 @@ namespace _Project.Scripts.Windows.BoardWidget
 
         protected override async UniTask InitializeMediator(CancellationToken cancellationToken)
         {
+            _gameplayMediator = View.Data.GameplayMediator;
             _cellPrefab = await _boardHandler.LoadCellView();
             _linePrefab = await _boardHandler.LoadLineView();
             
@@ -47,12 +48,12 @@ namespace _Project.Scripts.Windows.BoardWidget
 
         private void OnCellClicked(int row, int column)
         {
-            _photonManager.TryMakeMove(row, column);
+            _gameplayMediator.TryMakeMove(row, column);
         }
 
         private void OnQuitGameplay()
         {
-            _photonManager.ExitSession();
+            _gameplayMediator.ExitSession();
         }
         
         private void OnPlayerWin(SymbolType symbol)
