@@ -4,7 +4,7 @@
 
 This project is a fully functional Tic Tac Toe game implemented using Unity. The game includes **multiplayer functionality**
 for two players, **PlayFab authentication**, **play with computer mode** and **data collection through PlayFab**. The project showcases best practices in
-Unity development, emphasizing **clean code architecture, maintainability, and scalability**.
+Unity development, emphasizing **clean code architecture**, **maintainability**, and **scalability**.
 
 
 
