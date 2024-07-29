@@ -33,9 +33,9 @@ namespace _Project.Scripts.Windows.BoardWidget
             _playerProvider.AuthModel = signUpModel;
 
             _authProvider.CreateAccount(signUpModel);
-
-            DisposeMediator();
+            
             View.Close();
+            Dispose();
         }
         
         private void CompleteSignIn(SignUpModel signInModel) => 
@@ -47,8 +47,8 @@ namespace _Project.Scripts.Windows.BoardWidget
             if (result)
             {
                 View.SignInView.ErrorText.text = "Success!";
-                DisposeMediator();
                 View.Close();
+                Dispose();
             }
             else
             {

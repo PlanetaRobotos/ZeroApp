@@ -12,7 +12,6 @@ namespace _Project.Scripts.Windows.BoardWidget
     public class HudWidgetMediator : BaseUIMediator<HUDWindow>
     {
         [Inject] private IAuthProvider _authProvider;
-        [Inject] private readonly TasksLoader _tasksLoader;
         [Inject] private IPlayerProfileProvider PlayerProvider { get; }
         
         protected override UniTask InitializeMediator(CancellationToken cancellationToken)
@@ -32,7 +31,7 @@ namespace _Project.Scripts.Windows.BoardWidget
             _authProvider.SignOut();
             PlayerProvider.Reset();
 
-            _tasksLoader.DoTasks(new ITask[] { new AuthAsyncTask() });
+            new AuthAsyncTask().Do();
         }
 
         protected override UniTask DisposeMediator()

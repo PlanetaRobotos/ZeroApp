@@ -1,5 +1,4 @@
 ﻿using System;
-using _Project.Scripts.Windows.HUD;
 using WindowsSystem.Core;
 
 namespace _Project.Scripts.Core
@@ -13,5 +12,6 @@ namespace _Project.Scripts.Core
         public Action<bool> OnInteractiveChanged;
         
         public int BoardSize;
+        public IGameplayMediator GameplayMediator;
     }
 }

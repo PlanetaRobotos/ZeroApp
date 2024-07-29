@@ -23,9 +23,7 @@ namespace _Project.Scripts.Infrastructure.States
         [Inject] private readonly WindowsController _windowsController;
         [Inject] private readonly ConfigsController _configsController;
         [Inject] private readonly FollowBehaviour _followBehaviour;
-
-        [Inject] private readonly PhotonManager _photonManager;
-
+        
         private CancellationTokenSource _cts;
 
         public void Enter()
@@ -45,10 +43,9 @@ namespace _Project.Scripts.Infrastructure.States
         {
             ITask[] tasks =
             {
-                new LoadBoardWidgetTaskAsync(),
                 new OpenWindowTask<LoadingWindow>(_windowsController, WindowsConstants.LOADING_WINDOW, true),
                 new LoadAndOpenHUDWindowAsyncTask(),
-                new OpenWindowTask<SelectModeWindow>(_windowsController, WindowsConstants.SELECT_MODE_WINDOW, true),
+                new SelectModeWindowAsyncTask(),
                 new AuthAsyncTask(),
                 new MakeActionTaskAsync(
                     () => _scenesManager.LoadScene((byte)SceneLibraryConstants.MAIN_MENU, _cts.Token)),

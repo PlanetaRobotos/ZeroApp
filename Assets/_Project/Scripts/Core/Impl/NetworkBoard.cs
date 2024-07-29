@@ -1,5 +1,6 @@
 ﻿using _Project.Scripts.Core.Abstract;
 using _Project.Scripts.Data;
+using _Project.Scripts.Models;
 using _Project.Scripts.Windows.HUD;
 using Fusion;
 using Logging;
@@ -7,18 +8,18 @@ using UnityEngine;
 
 namespace _Project.Scripts.Core
 {
-    public class Board : NetworkBehaviour, IBoard
+    public class NetworkBoard : NetworkBehaviour, IBoard
     {
         private BoardWidgetData _boardWidgetData;
-        
+
         [Inject] private ICustomLogger _logger;
         [Inject] private IGameRules _gameRules;
         [Inject] private IBoardFactory _boardFactory;
-        [Inject] private PhotonManager _photonManager;
         [Inject] private IPlayerProfileProvider _playerProvider;
         [Inject] private IGameTracker _gameTracker;
 
         private int _gridSize;
+        private IGameplayMediator _gameplayMediator;
 
         private NetworkBool NetworkIsInteract { get; set; }
 
@@ -27,32 +28,53 @@ namespace _Project.Scripts.Core
 
         public SymbolType[,] Grid { get; private set; }
 
-        public void Initialize(BoardWidgetData boardWidgetData)
+        public void Initialize(BoardWidgetData boardWidgetData, IGameplayMediator gameplayMediator)
         {
+            _gameplayMediator = gameplayMediator;
             _boardWidgetData = boardWidgetData;
-            
             Grid = _boardFactory.CreateGrid();
             _boardWidgetData.OnBoardChanged?.Invoke(Grid);
             Reset();
         }
 
+        public void MakeMove(BoardCell cell) =>
+            MakeMoveRpc(cell);
+
         [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-        public void MakeMoveRpc(BoardCell cell)
+        private void MakeMoveRpc(BoardCell cell)
         {
             Debug.Log($"MakeMoveRpc called {cell} - {_playerProvider}");
             NetworkCell = cell;
         }
 
-        private void GridChanged()
+        public void SetInteract(bool isInteractable) => 
+            SetInteractRpc(isInteractable);
+
+        public void Initialize(BoardWidgetData boardWidgetData)
         {
-            if (HasStateAuthority) 
-                PlaceSymbol(NetworkCell.Row, NetworkCell.Column, NetworkCell.Symbol);
+            throw new System.NotImplementedException();
         }
 
-        public void PlaceSymbol(int row, int column, SymbolType symbol)
+        [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+        private void SetInteractRpc(NetworkBool isInteractable)
         {
-            _logger.Log($"Grid changed from server {Grid}");
+            Debug.Log($"Board changed isInteractable {isInteractable}");
+            IsInteractive = isInteractable;
+        }
 
+        private void GridChanged()
+        {
+            if (HasStateAuthority)
+            {
+                _logger.Log($"Grid changed from server {Grid}");
+                PlaceSymbol(NetworkCell.Row, NetworkCell.Column, NetworkCell.Symbol, out _);
+            }
+        }
+
+        public void PlaceSymbol(int row, int column, SymbolType symbol, out ResultType result)
+        {
+            result = ResultType.None;
+            
             if (!IsCellEmpty(row, column))
             {
                 Debug.Log($"Cell {row} - {column} is not empty");
@@ -64,11 +86,12 @@ namespace _Project.Scripts.Core
             if (_gameRules.CheckWin(Grid, symbol))
             {
                 Debug.Log($"Player {symbol} wins");
-                
+
                 _gameTracker.RecordWin();
-                
+
                 _boardWidgetData.OnPlayerWin?.Invoke(symbol);
                 SetInteractiveBoth(false);
+                result = ResultType.Win;
             }
 
             if (_gameRules.CheckDraw(this))
@@ -76,6 +99,7 @@ namespace _Project.Scripts.Core
                 Debug.Log("Draw");
                 _boardWidgetData.OnDraw?.Invoke();
                 SetInteractiveBoth(false);
+                result = ResultType.Draw;
             }
 
             _boardWidgetData.OnBoardChanged?.Invoke(Grid);
@@ -83,36 +107,22 @@ namespace _Project.Scripts.Core
             if (symbol == _playerProvider.Symbol)
             {
                 IsInteractive = false;
-                _photonManager.GetOtherPlayer.SetInteractRpc(true);
+                _gameplayMediator.GetOtherPlayer.Board.SetInteract(true);
             }
         }
 
         private void SetInteractiveBoth(bool isInteractable)
         {
             IsInteractive = isInteractable;
-            _photonManager.GetOtherPlayer.SetInteractRpc(isInteractable);
+            _gameplayMediator.GetOtherPlayer.Board.SetInteract(isInteractable);
         }
 
-        public bool IsCellEmpty(int row, int column)
-        {
-            return Grid[row, column] == SymbolType.None;
-        }
+        public bool IsCellEmpty(int row, int column) =>
+            Grid.IsCellEmpty(row, column);
 
-        public bool IsFull()
-        {
-            foreach (var cell in Grid)
-                if (cell == SymbolType.None)
-                    return false;
+        public bool IsFull() => Grid.IsFull();
 
-            return true;
-        }
-
-        public void Reset()
-        {
-            for (int i = 0; i < _gridSize; i++)
-            for (int j = 0; j < _gridSize; j++)
-                Grid[i, j] = SymbolType.None;
-        }
+        public void Reset() => this.ResetGrid();
 
         public bool IsInteractive
         {
@@ -120,10 +130,10 @@ namespace _Project.Scripts.Core
             set
             {
                 _logger.Log($"IsInteractive changed to {value}");
-                
+
                 _boardWidgetData.OnInteractiveChanged?.Invoke(value);
                 _boardWidgetData.OnPlayerTurn?.Invoke(value);
-                
+
                 NetworkIsInteract = value;
             }
         }
