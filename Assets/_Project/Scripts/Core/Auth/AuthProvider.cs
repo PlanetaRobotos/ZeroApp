@@ -60,7 +60,7 @@ namespace _Project.Core.Auth
 
         public UniTask<bool> SignInAsync(string username, string password)
         {
-            UniTaskCompletionSource<bool> completionSource = new UniTaskCompletionSource<bool>();
+            UniTaskCompletionSource<bool> completionSource = new();
 
             PlayFabClientAPI.LoginWithPlayFab(new LoginWithPlayFabRequest
                 {
@@ -71,11 +71,13 @@ namespace _Project.Core.Auth
                 {
                     Debug.Log($"Successful Account Login: {username}");
                     GameTracker.InitializeWins();
-                    PlayerProvider.AuthModel = new SignUpModel
+                    SignUpModel model = new()
                     {
                         Username = username,
                         Password = password
                     };
+                    PlayerProvider.AuthModel = model;
+                    SetAuth(model);
                     completionSource.TrySetResult(true);
                 },
                 error =>

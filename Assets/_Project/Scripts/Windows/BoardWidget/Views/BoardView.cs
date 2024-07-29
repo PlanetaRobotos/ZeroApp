@@ -44,6 +44,7 @@ namespace _Project.Windows.BoardWidget.Views
             IterateCells((i, j) =>
             {
                 CellView cell = _boardFactory.CreateCell(buttonPrefab, cellsParent, SymbolType.None);
+                cell.SymbolType = SymbolType.None;
                 _cells[i, j] = cell;
                 int x = i, y = j;
                 _cells[i, j].Subscribe(() => onCellClicked?.Invoke(x, y));
@@ -55,16 +56,11 @@ namespace _Project.Windows.BoardWidget.Views
             IterateCells((i, j) =>
             {
                 SymbolType symbolType = grid[i, j];
-                bool isSpriteFound = _boardFactory.GetSpriteByType(symbolType);
-                if (isSpriteFound)
-                    _cells[i, j].SetSymbolSprite(_boardFactory.GetSpriteByType(symbolType), symbolType);
-                else _logger.LogError("Sprite not found for symbol type: " + symbolType);
+                bool isSymbolUpdated = _cells[i, j].SymbolType != symbolType;
+                _cells[i, j].SymbolType = symbolType;
+                _cells[i, j].SetSymbolSprite(_boardFactory.GetSpriteByType(symbolType), symbolType,
+                    isSymbolUpdated);
             });
-        }
-
-        public void UpdateCell(SymbolType symbol, int row, int column)
-        {
-            _cells[row, column].SetSymbolSprite(_boardFactory.GetSpriteByType(symbol), symbol);
         }
 
         private void IterateCells(Action<int, int> action)
