@@ -1,5 +1,5 @@
 ﻿using _Project.Scripts.Core;
-using _Project.Scripts.Core.Abstract;
+using _Project.Scripts.Models;
 using Logging;
 using TMPro;
 using UnityEngine;
@@ -8,35 +8,32 @@ using WindowsSystem.Core;
 
 namespace _Project.Scripts.Windows.HUD
 {
-    public class BoardWindow : BaseWindow<BoardData>
+    public class BoardWindow : BaseWindow<BoardWidgetData>
     {
         [SerializeField] private TMP_Text playerTurnText;
-        [SerializeField] private TMP_Text resultText;
-        // [SerializeField] private Button resetButton;
         [SerializeField] private Button _exitButton;
         [SerializeField] private CanvasGroup _boardCanvasGroup;
 
         [SerializeField] private BoardView _boardView;
+        [SerializeField] private GameResultView _gameResultView;
         
+        public Button ExitButton => _exitButton;
+        public BoardView BoardView => _boardView;
+        public GameResultView GameResultView => _gameResultView;
+
         [Inject] private ICustomLogger _logger;
-        [Inject] private PhotonManager _photonManager;
-        [Inject] private IPlayerProvider _playerProvider;
         
         public override void OnOpen()
         {
-            _boardView.Construct(_logger, _photonManager);
-            _boardView.Initialize(3, 3);
+            _boardView.Construct(_logger);
+            _boardView.Initialize(Data.BoardSize);
             
             Data.OnBoardChanged += OnBoardChanged;
             Data.OnPlayerTurn += OnPlayerTurn;
-            // Data.OnBoardCellChanged += OnBoardCellChanged;
-            Data.OnPlayerWin += OnPlayerWin;
             Data.OnDraw += OnDraw;
             Data.OnInteractiveChanged += OnInteractiveChanged;
             
-            _exitButton.onClick.AddListener(OnQuitGameplay);
-
-            SetActiveResultView(false);
+            GameResultView.SetActive(false);
             SetActivePlayerTurnView(true);
         }
 
@@ -44,12 +41,8 @@ namespace _Project.Scripts.Windows.HUD
         {
             Data.OnBoardChanged -= OnBoardChanged;
             Data.OnPlayerTurn -= OnPlayerTurn;
-            // Data.OnBoardCellChanged -= OnBoardCellChanged;
-            Data.OnPlayerWin -= OnPlayerWin;
             Data.OnDraw -= OnDraw;
             Data.OnInteractiveChanged -= OnInteractiveChanged;
-            
-            _exitButton.onClick.RemoveListener(OnQuitGameplay);
             
             base.Close();
         }
@@ -58,48 +51,24 @@ namespace _Project.Scripts.Windows.HUD
         {
             _boardCanvasGroup.interactable = isInteractive;
         }
-        
-        private void OnPlayerWin(SymbolType symbol)
-        {
-            SetActivePlayerTurnView(false);
-            
-            SetActiveResultView(true);
-            resultText.text = "You " + (symbol == _playerProvider.Player.Symbol ? "win!" : "lose!");
-        }
-
-        private void SetActiveResultView(bool isActive)
-        {
-            resultText.gameObject.SetActive(isActive);
-        }
 
         private void OnDraw()
         {
             SetActivePlayerTurnView(false);
             
-            SetActiveResultView(true);
-            resultText.text = "Draw!";
+            GameResultView.SetActive(true);
+            ExitButton.gameObject.SetActive(false);
+            _gameResultView.SetResultText(ResultType.Draw);
         }
 
-        private void SetActivePlayerTurnView(bool isActive)
+        public void SetActivePlayerTurnView(bool isActive)
         {
             playerTurnText.gameObject.SetActive(isActive);
-        }
-
-        private void OnQuitGameplay()
-        {
-            _photonManager.ExitSession();
-            
-            Close();
         }
         
         private void OnBoardChanged(SymbolType[,] grid)
         {
             _boardView.UpdateBoard(grid);
-        }
-        
-        private void OnBoardCellChanged(SymbolType symbol, int row, int column)
-        {
-            _boardView.UpdateCell(symbol, row, column);
         }
         
         private void OnPlayerTurn(bool isPlayerTurn)

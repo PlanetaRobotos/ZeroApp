@@ -11,23 +11,27 @@ namespace _Project.Scripts.Windows.HUD
 {
     public interface IBoardFactory
     {
+        CellView CreateCell(CellView buttonPrefab, Transform parent, SymbolType symbolType);
+        Sprite GetSpriteByType(SymbolType symbolType);
+        void GenerateLines(GridLayoutGroup gridLayoutGroup, Transform linesParent, GameObject linePrefab);
+        SymbolType[,] CreateGrid();
+        int GridSize { get; }
     }
 
     public class BoardFactory : IBoardFactory
     {
-        [Inject] private ICustomLogger _logger;
+        private const float LineWidth = 2;
 
-        private readonly BoardDatabase _boardDatabase;
         private readonly BoardConfig _boardConfig;
-
         private Dictionary<SymbolType, SymbolSpriteModel> SpriteModels { get; }
-
+        
+        [Inject] private ICustomLogger _logger;
+        
         public BoardFactory(BoardDatabase boardDatabase, BoardConfig boardConfig)
         {
             _boardConfig = boardConfig;
-            _boardDatabase = boardDatabase;
 
-            SpriteModels = _boardDatabase.SymbolSprites.ToDictionary(x => x.SymbolType, y => y);
+            SpriteModels = boardDatabase.SymbolSprites.ToDictionary(x => x.SymbolType, y => y);
         }
 
         public CellView CreateCell(CellView buttonPrefab, Transform parent, SymbolType symbolType)
@@ -40,21 +44,22 @@ namespace _Project.Scripts.Windows.HUD
         public Sprite GetSpriteByType(SymbolType symbolType) => 
             SpriteModels[symbolType].SymbolSprite;
 
-        public void GenerateLines(int cols, int rows, GridLayoutGroup gridLayoutGroup, Transform linesParent, int lineWidth)
+        public void GenerateLines(GridLayoutGroup gridLayoutGroup, Transform linesParent, GameObject linePrefab)
         {
+            float lineWidth = LineWidth;
             float cellWidth = gridLayoutGroup.cellSize.x;
             float cellHeight = gridLayoutGroup.cellSize.y;
             float spacingX = gridLayoutGroup.spacing.x;
             float spacingY = gridLayoutGroup.spacing.y;
             RectOffset padding = gridLayoutGroup.padding;
 
-            float totalWidth = cols * cellWidth + (cols - 1) * spacingX + padding.left + padding.right;
-            float totalHeight = rows * cellHeight + (rows - 1) * spacingY + padding.top + padding.bottom;
+            float totalWidth = GridSize * cellWidth + (GridSize - 1) * spacingX + padding.left + padding.right;
+            float totalHeight = GridSize * cellHeight + (GridSize - 1) * spacingY + padding.top + padding.bottom;
 
             // Create vertical lines
-            for (int x = 0; x < cols-1; x++)
+            for (int x = 0; x < GridSize-1; x++)
             {
-                var verticalLine = Object.Instantiate(_boardDatabase.LinePrefab, linesParent);
+                var verticalLine = Object.Instantiate(linePrefab, linesParent);
                 var verticalLineRT = (RectTransform) verticalLine.transform;
                 verticalLineRT.sizeDelta = new Vector2(lineWidth, totalHeight);
                 verticalLineRT.anchoredPosition =
@@ -62,17 +67,19 @@ namespace _Project.Scripts.Windows.HUD
             }
 
             // Create horizontal lines
-            for (int y = 0; y < rows-1; y++)
+            for (int y = 0; y < GridSize-1; y++)
             {
-                var horizontalLine = Object.Instantiate(_boardDatabase.LinePrefab, linesParent);
+                var horizontalLine = Object.Instantiate(linePrefab, linesParent);
                 var horizontalLineRT = (RectTransform) horizontalLine.transform;
                 horizontalLineRT.sizeDelta = new Vector2(totalWidth, lineWidth);
                 horizontalLineRT.anchoredPosition =
                     new Vector2(0, -y * (cellHeight + spacingY) + cellHeight / lineWidth + spacingY / lineWidth);
             }
         }
-
+        
         public SymbolType[,] CreateGrid() => 
             new SymbolType[_boardConfig.GridSize, _boardConfig.GridSize];
+        
+        public int GridSize => _boardConfig.GridSize;
     }
 }
