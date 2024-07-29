@@ -6,7 +6,7 @@ This project is a fully functional Tic Tac Toe game implemented using Unity. The
 for two players, **PlayFab authentication**, **play with computer mode** and **data collection through PlayFab**. The project showcases best practices in
 Unity development, emphasizing **clean code architecture**, **maintainability**, and **scalability**.
 
-
+<img src="Recordings/global.gif" width="300" />
 
 ## Features
 
@@ -31,7 +31,9 @@ Unity development, emphasizing **clean code architecture**, **maintainability**,
 
 ### Score Tracking
 
-- The game keeps track of the number of wins for each player.
+- The game keeps track of the number of wins for each registered player in Play Fab. To check the number of wins open the settings tab
+
+<img src="Recordings/settings-tab.jpg" width="150" />
 
 ## User Interface
 
@@ -43,10 +45,6 @@ Unity development, emphasizing **clean code architecture**, **maintainability**,
 ### Result Display
 
 - Displays the result of the game (win/draw) at the end of each match.
-
-### Reset Button
-
-- A reset button is provided to restart the game, resetting the board.
 
 ## Architecture
 
@@ -63,11 +61,23 @@ Unity development, emphasizing **clean code architecture**, **maintainability**,
 
 - The game includes an AI opponent for single-player mode.
 
+### PlayFab Integration
+
+- PlayFab is integrated for user authentication and data collection.
+
+### Multiplayer Mode
+
+- The game supports multiplayer mode for two players.
+
 ## Getting Started
 
 ### Prerequisites
 
 - Unity 2019.4 or later
+
+### Build Testing
+
+[click me to download](https://github.com/)
 
 ### Installation
 
