@@ -2,7 +2,7 @@ using System;
 using _Project.Scripts.Infrastructure;
 using UnityEngine;
 
-namespace _Project.Scripts.Windows.Particles
+namespace _Project.Windows.Particles
 {
     public class MainUIParticles : MonoBehaviour
     {
@@ -22,13 +22,11 @@ namespace _Project.Scripts.Windows.Particles
 
         private void SwitchParticles(bool isVisible)
         {
-            for (int i = 0; i < particles.Length; i++)
-            {
+            for (var i = 0; i < particles.Length; i++)
                 if (isVisible)
-                    particles[i].Play(withChildren: true);
+                    particles[i].Play(true);
                 else
-                    particles[i].Stop(withChildren: true, ParticleSystemStopBehavior.StopEmittingAndClear);
-            }
+                    particles[i].Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
     }
 }

@@ -38,3 +38,15 @@ MonoBehaviour:
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0
+  - windowId: AuthWindow
+    windowRef:
+      m_AssetGUID: 58f3194652d22b94da0bfaa7e90a6d8c
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+  - windowId: SearchOpponentWindow
+    windowRef:
+      m_AssetGUID: 2fb10fe4f71b67148b36515b93f94426
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0

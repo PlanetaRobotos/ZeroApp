@@ -17,28 +17,8 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: c5d7c4de237358e4891155f4b6dabbb0
   m_SerializeEntries:
-  - m_GUID: dfe98b0e8dc04af4f941acada1e73d41
-    m_Address: GameField
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b88ba04e73315f8478518cfdb9a10382
-    m_Address: Entity
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d7df5227cd8325844ac1124b43ea07f8
-    m_Address: SimpleAI
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 19ffdc94fd66ed249939e8fc22eb7959
-    m_Address: PlayerEntity
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 10c3c226a879bdd44bb6ef9fad2dd09d
-    m_Address: Yard
+  - m_GUID: d208885691999d44aa7ac2a28f75c410
+    m_Address: NetworkPlayer
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

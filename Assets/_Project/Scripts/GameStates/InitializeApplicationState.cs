@@ -1,15 +1,16 @@
-﻿using GameTasks;
+﻿using _Project.Scripts.Infrastructure;
+using GameTasks;
 using GameTasks.Core;
 using Services.States;
 using UnityEngine;
 
-namespace _Project.Scripts.Infrastructure.States
+namespace _Project.GameStates
 {
     public class InitializeApplicationState : IState
     {
         [Inject] private ApplicationStateMachine _stateMachine { get; }
         [Inject] private TasksLoader _tasksLoader { get; }
-        
+
         public void Enter()
         {
             Application.runInBackground = true;
@@ -24,8 +25,9 @@ namespace _Project.Scripts.Infrastructure.States
 
         private ITask[] GetTasks()
         {
-            ITask[] tasks = {
-                new WaitCachingReadyTask(),
+            ITask[] tasks =
+            {
+                new WaitCachingReadyTask()
             };
 
             return tasks;
@@ -36,7 +38,7 @@ namespace _Project.Scripts.Infrastructure.States
 #if UNITY_ANDROID || UNITY_IOS
             Application.targetFrameRate = 60; //TODO определять для слабых девайсов другой фреймрейт
 #else
-        Application.targetFrameRate = 300;
+            Application.targetFrameRate = 300;
 #endif
         }
     }

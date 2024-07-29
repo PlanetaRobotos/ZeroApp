@@ -59,8 +59,7 @@
     "AssembliesToWeave": [
         "Fusion.Unity",
         "Assembly-CSharp",
-        "Assembly-CSharp-firstpass",
-        "Core.Impl"
+        "Assembly-CSharp-firstpass"
     ],
     "UseSerializableDictionary": true,
     "NullChecksForNetworkedProperties": true,

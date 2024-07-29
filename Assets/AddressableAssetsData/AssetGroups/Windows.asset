@@ -37,6 +37,26 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2fb10fe4f71b67148b36515b93f94426
+    m_Address: SearchOpponentWindow
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 03c16cb32b49c9a418714a2bf34ebe25
+    m_Address: BoardWidget/CellView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 35a36e7802280f74b8fdf68aa24acb07
+    m_Address: BoardWidget/BoardLine
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 58f3194652d22b94da0bfaa7e90a6d8c
+    m_Address: AuthWindow
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: aca110cfc559cf842bd3b40cc8727785, type: 2}
   m_SchemaSet:

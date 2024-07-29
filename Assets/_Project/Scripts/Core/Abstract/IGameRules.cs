@@ -1,8 +1,10 @@
-﻿namespace _Project.Scripts.Core.Abstract
+﻿using _Project.Models;
+
+namespace _Project.Core
 {
     public interface IGameRules
     {
-        bool CheckWin(IBoard board, PlayerProfile player);
+        bool CheckWin(SymbolType[,] grid, SymbolType symbol);
         bool CheckDraw(IBoard board);
     }
 }

@@ -20,4 +20,4 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
-  scenePath: Assets/_Project/Scenes/MainExampleScene.unity
+  scenePath: Assets/_Project/Scenes/GameplayScene.unity
