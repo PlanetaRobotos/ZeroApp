@@ -10,71 +10,66 @@ namespace _Project.Scripts.Windows.HUD
 {
     public class BoardView : MonoBehaviour, IDisposable
     {
-        public CellView buttonPrefab;
-
         [SerializeField] private Transform cellsParent;
         [SerializeField] private Transform linesParent;
         [SerializeField] private GridLayoutGroup _gridLayoutGroup;
 
         private CellView[,] _cells;
         private ICustomLogger _logger;
-        private PhotonManager _photonManager;
+        private BoardWindow _boardWindow;
 
-        [Inject] private IPlayerProvider _playerProvider;
-        [Inject] private BoardFactory _boardFactory;
+        [Inject] private IBoardFactory _boardFactory;
 
-        public void Construct(ICustomLogger logger, PhotonManager photonManager)
+        public void Construct(ICustomLogger logger)
         {
             _logger = logger;
-            _photonManager = photonManager;
         }
 
-        public void Initialize(int colsAmount, int rowsAmount)
+        public void Initialize(int boardSize)
         {
-            _cells = new CellView[colsAmount, rowsAmount];
-            CreateBoard(colsAmount, rowsAmount);
-            _boardFactory.GenerateLines(colsAmount, rowsAmount, _gridLayoutGroup, linesParent, 2);
+            _cells = new CellView[boardSize, boardSize];
         }
 
-        private void CreateBoard(int colsAmount, int rowsAmount)
+        public void GenerateLines(GameObject linePrefab)
         {
-            for (int i = 0; i < colsAmount; i++)
+            _boardFactory.GenerateLines(_gridLayoutGroup, linesParent, linePrefab);
+        }
+
+        public void CreateBoard(CellView buttonPrefab, Action<int, int> onCellClicked)
+        {
+            IterateCells((i, j) =>
             {
-                for (int j = 0; j < rowsAmount; j++)
-                {
-                    CellView cell = _boardFactory.CreateCell(buttonPrefab, cellsParent, SymbolType.None);
-                    _cells[i, j] = cell;
-                    int x = i, y = j;
-                    _cells[i, j].Subscribe(() => OnButtonClicked(x, y));
-                }
-            }
-        }
-
-        private void OnButtonClicked(int x, int y)
-        {
-            _photonManager.TryMakeMove(x, y);
+                CellView cell = _boardFactory.CreateCell(buttonPrefab, cellsParent, SymbolType.None);
+                _cells[i, j] = cell;
+                int x = i, y = j;
+                _cells[i, j].Subscribe(() => onCellClicked?.Invoke(x, y));
+            });
         }
 
         public void UpdateBoard(SymbolType[,] grid)
         {
-            for (int i = 0; i < grid.GetLength(0); i++)
+            IterateCells((i, j) =>
             {
-                for (int j = 0; j < grid.GetLength(1); j++)
+                var symbolType = grid[i, j];
+                bool isSpriteFound = _boardFactory.GetSpriteByType(symbolType);
+                if (isSpriteFound)
                 {
-                    var symbolType = grid[i, j];
-                    bool isSpriteFound = _boardFactory.GetSpriteByType(symbolType);
-                    if (isSpriteFound)
-                    {
-                        _cells[i, j].SetSymbolSprite(_boardFactory.GetSpriteByType(symbolType), symbolType);
-                    }
-                    else _logger.LogError("Sprite not found for symbol type: " + symbolType);
+                    _cells[i, j].SetSymbolSprite(_boardFactory.GetSpriteByType(symbolType), symbolType);
                 }
-            }
+                else _logger.LogError("Sprite not found for symbol type: " + symbolType);
+            });
         }
 
         public void UpdateCell(SymbolType symbol, int row, int column)
         {
             _cells[row, column].SetSymbolSprite(_boardFactory.GetSpriteByType(symbol), symbol);
+        }
+
+        private void IterateCells(Action<int, int> action)
+        {
+            for (int i = 0; i < _cells.GetLength(0); i++)
+            for (int j = 0; j < _cells.GetLength(1); j++)
+                action(i, j);
         }
 
         public void Dispose()

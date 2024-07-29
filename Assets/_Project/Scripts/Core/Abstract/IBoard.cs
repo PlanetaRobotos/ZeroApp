@@ -1,4 +1,6 @@
-﻿namespace _Project.Scripts.Core.Abstract
+﻿using _Project.Scripts.Data;
+
+namespace _Project.Scripts.Core.Abstract
 {
     public interface IBoard
     {
@@ -8,6 +10,6 @@
         bool IsCellEmpty(int row, int column);
         bool IsFull();
         void Reset();
-        // void SetInteractive(bool isActive);
+        void MakeMoveRpc(BoardCell cell);
     }
 }

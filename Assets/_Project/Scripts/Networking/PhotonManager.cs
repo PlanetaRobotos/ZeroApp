@@ -17,23 +17,22 @@ using WindowsSystem.Core.Managers;
 
 public class PhotonManager : MonoBehaviour, INetworkRunnerCallbacks
 {
-    private const int WaitingOpponentDelay = 5;
+    private const int WaitingOpponentDelay = 25;
 
     public NetworkPrefabRef gameManagerPrefab;
 
-    public NetworkGameManager[] Players = new NetworkGameManager[2];
+    private NetworkGameManager[] _players = new NetworkGameManager[2];
     private NetworkGameManager _currentPlayer;
 
     private NetworkRunner _runner;
     private CancellationTokenSource _cts;
 
     [Inject] private WindowsController WindowsController { get; }
-    [Inject] private BoardData _boardData;
     [Inject] private IScenesManager ScenesManager { get; }
-    [Inject] private IPlayerProvider PlayerProvider { get; }
+    [Inject] private IPlayerProfileProvider PlayerProvider { get; }
 
     public NetworkGameManager GetOtherPlayer =>
-        Players.First(x => x != _currentPlayer);
+        _players.First(x => x != _currentPlayer);
 
     public async UniTask StartGame()
     {
@@ -54,7 +53,7 @@ public class PhotonManager : MonoBehaviour, INetworkRunnerCallbacks
         };
 
         var searchOpponentWindow =
-            await WindowsController.OpenWindowAsync<SearchOpponentWindow>(WindowsConstants.SEARCH_WINDOW, _boardData,
+            await WindowsController.OpenWindowAsync<SearchOpponentWindow>(WindowsConstants.SEARCH_WINDOW, null,
                 true);
 
         searchOpponentWindow.SetWaitingView("Loading game...");
@@ -82,7 +81,7 @@ public class PhotonManager : MonoBehaviour, INetworkRunnerCallbacks
         var players = FindObjectsOfType<NetworkGameManager>();
         if (players.Length == 2)
         {
-            Players = players;
+            _players = players;
 
             if (_runner.IsSharedModeMasterClient)
                 await BothPlayersAreJoinedAsync();
@@ -102,10 +101,10 @@ public class PhotonManager : MonoBehaviour, INetworkRunnerCallbacks
 
     private async UniTask BothPlayersAreJoinedAsync()
     {
-        Debug.Log($"Assigned symbols: Player {Players[0]} = X, Player {Players[1]} = O");
+        Debug.Log($"Assigned symbols: Player {_players[0]} = X, Player {_players[1]} = O");
 
-        Players[0].StartGameRpc(SymbolType.Cross, isInteractable: true);
-        Players[1].StartGameRpc(SymbolType.Circle, isInteractable: false);
+        _players[0].StartGameRpc(SymbolType.Cross, isInteractable: true);
+        _players[1].StartGameRpc(SymbolType.Circle, isInteractable: false);
     }
 
     public void ExitSession()
@@ -120,21 +119,21 @@ public class PhotonManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         if (_currentPlayer.Board.IsInteractive)
         {
-            Debug.Log($"Player {PlayerProvider.Player} is interactive");
+            Debug.Log($"Player {PlayerProvider} is interactive");
 
-            foreach (var network in Players)
+            foreach (var network in _players)
             {
                 network.Board.MakeMoveRpc(new BoardCell
                 {
                     Row = x,
                     Column = y,
-                    Symbol = PlayerProvider.Player.Symbol
+                    Symbol = PlayerProvider.Symbol
                 });
             }
         }
         else
         {
-            Debug.Log($"Player {PlayerProvider.Player} is not interactive");
+            Debug.Log($"Player {PlayerProvider} is not interactive");
         }
     }
 

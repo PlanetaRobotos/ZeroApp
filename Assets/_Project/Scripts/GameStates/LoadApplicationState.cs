@@ -3,6 +3,8 @@ using _Project.Scripts.Configs;
 using _Project.Scripts.Entities;
 using _Project.Scripts.GameConstants;
 using _Project.Scripts.Infrastructure.Tasks;
+using _Project.Scripts.Tasks;
+using _Project.Scripts.Windows.BoardWidget.Tasks;
 using _Project.Scripts.Windows.HUD;
 using _Project.Scripts.Windows.Loading;
 using Constellation.SceneManagement;
@@ -43,9 +45,11 @@ namespace _Project.Scripts.Infrastructure.States
         {
             ITask[] tasks =
             {
+                new LoadBoardWidgetTaskAsync(),
                 new OpenWindowTask<LoadingWindow>(_windowsController, WindowsConstants.LOADING_WINDOW, true),
-                new OpenWindowTask<HUDWindow>(_windowsController, WindowsConstants.HUD_WINDOW, true),
+                new LoadAndOpenHUDWindowAsyncTask(),
                 new OpenWindowTask<SelectModeWindow>(_windowsController, WindowsConstants.SELECT_MODE_WINDOW, true),
+                new AuthAsyncTask(),
                 new MakeActionTaskAsync(
                     () => _scenesManager.LoadScene((byte)SceneLibraryConstants.MAIN_MENU, _cts.Token)),
             };
