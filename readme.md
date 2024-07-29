@@ -77,10 +77,10 @@ Unity development, emphasizing **clean code architecture**, **maintainability**,
 
 ### Build Testing
 
-- The game can be tested by downloading the build from the following link: [Tic-Tac-Toe Build](https://github.com/PlanetaRobotos/ZeroApp/tree/develop/Builds/test/tictactoe.exe)
-- To test the game, download the build and run the executable file in two different windows to play in multiplayer mode.
+- The game can be tested by downloading the build from the following link: [Tic-Tac-Toe Build](https://github.com/PlanetaRobotos/applications/blob/master/tictactoe/tictactoe-app.zip)
+- To test the game, download the build or build from unity project and run the executable file in two different windows to play in multiplayer mode.
 
-
+<img src="Recordings/multiplayer-setup.gif" width="300" />
 
 ### Installation
 
@@ -94,7 +94,15 @@ Unity development, emphasizing **clean code architecture**, **maintainability**,
 
 ## Design Notes
 
-- The project demonstrates clean code practices and is structured for easy understanding and modification.
+### Project Structure
+
+- AI
+- Core
+- GameStates
+- Models
+- Networking
+- UI
+- Windows
 
 ## Contacts
 
