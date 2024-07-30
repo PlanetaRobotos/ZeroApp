@@ -30,7 +30,7 @@ Unity development, emphasizing **clean code architecture**, **maintainability**,
 
 ### Build Testing
 
-- The game can be tested by downloading the build from the following link: [Tic-Tac-Toe Build](https://github.com/PlanetaRobotos/applications/blob/master/tictactoe/tictactoe-app.zip)
+- The game can be tested by downloading the build from the following link: [Tic-Tac-Toe Build](https://drive.google.com/file/d/1Bb2beyOYRHpo_t8T-xwpRKvUrNZC0tle/view?usp=sharing)
 - To test the game, download the build or build from unity project and run the executable file in two different windows to play in multiplayer mode.
 
 <img src="Recordings/multiplayer-setup.gif" width="400" />
