@@ -19,7 +19,9 @@ namespace _Project.Extensions
             try
             {
                 var emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
-                return Regex.IsMatch(email, emailPattern);
+                bool isValidPattern = Regex.IsMatch(email, emailPattern);
+                error = isValidPattern ? string.Empty : "Invalid email format.";
+                return isValidPattern;
             }
             catch
             {

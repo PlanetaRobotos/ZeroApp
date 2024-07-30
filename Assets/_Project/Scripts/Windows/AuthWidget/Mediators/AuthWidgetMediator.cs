@@ -31,7 +31,7 @@ namespace _Project.Windows.AuthWidget.Mediators
             _authProvider.SetAuth(signUpModel);
             _playerProvider.AuthModel = signUpModel;
 
-            _authProvider.CreateAccount(signUpModel);
+            _authProvider.CreateAccount(signUpModel).Forget();
 
             View.Close();
             Dispose();

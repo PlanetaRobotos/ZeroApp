@@ -13,23 +13,17 @@ namespace _Project.Core.Auth
         [Inject] private IGameTracker GameTracker { get; }
         [Inject] private IPlayerProfileProvider PlayerProvider { get; }
 
-        public bool TryAutoAuth(out string email, out string password, out string username)
+        public async UniTask<bool> TryAutoAuth()
         {
             if (PlayerPrefs.GetString(AuthPrefsKey) != "")
             {
                 string[] authData = PlayerPrefs.GetString(AuthPrefsKey).Split('|');
-                email = authData[0];
-                username = authData[1];
-                password = authData[2];
 
-                SignInAsync(username, password);
+                await SignInAsync(username: authData[1], password: authData[2]);
 
                 return true;
             }
 
-            email = null;
-            password = null;
-            username = null;
             return false;
         }
 
@@ -39,8 +33,10 @@ namespace _Project.Core.Auth
             PlayerPrefs.Save();
         }
 
-        public void CreateAccount(SignUpModel signUpModel)
+        public UniTask<bool> CreateAccount(SignUpModel signUpModel)
         {
+            UniTaskCompletionSource<bool> completionSource = new();
+
             PlayFabClientAPI.RegisterPlayFabUser(
                 new RegisterPlayFabUserRequest
                 {
@@ -49,13 +45,20 @@ namespace _Project.Core.Auth
                     Username = signUpModel.Username,
                     RequireBothUsernameAndEmail = true
                 },
-                response => { Debug.Log($"Successful Account Creation: {signUpModel.Username}, {signUpModel.Email}"); },
+                response =>
+                {
+                    Debug.Log($"Successful Account Creation: {signUpModel.Username}, {signUpModel.Email}");
+                    completionSource.TrySetResult(true);
+                },
                 error =>
                 {
                     Debug.Log(
                         $"Unsuccessful Account Creation: {signUpModel.Username}, {signUpModel.Email}\n{error.ErrorMessage}");
+                    completionSource.TrySetResult(false);
                 }
             );
+            
+            return completionSource.Task;
         }
 
         public UniTask<bool> SignInAsync(string username, string password)
