@@ -5,9 +5,9 @@ namespace _Project.Core
 {
     public interface IAuthProvider
     {
-        bool TryAutoAuth(out string email, out string password, out string username);
+        UniTask<bool> TryAutoAuth();
         void SetAuth(SignUpModel signUpModel);
-        void CreateAccount(SignUpModel signUpModel);
+        UniTask<bool> CreateAccount(SignUpModel signUpModel);
         UniTask<bool> SignInAsync(string username, string password);
         void SignOut();
     }

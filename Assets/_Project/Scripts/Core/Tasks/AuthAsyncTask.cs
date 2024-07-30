@@ -19,7 +19,8 @@ namespace _Project.Core.Tasks
 
         protected override async UniTask DoAsync()
         {
-            if (!_authProvider.TryAutoAuth(out string email, out string password, out string username))
+            var result = await _authProvider.TryAutoAuth();
+            if (!result)
             {
                 AuthWindow authWindow = await _windowsController.OpenWindowAsync<AuthWindow>(
                     WindowsConstants.AUTH_WINDOW,
