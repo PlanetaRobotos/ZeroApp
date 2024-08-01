@@ -23,10 +23,10 @@ SpriteAtlas:
     platformSettings:
     - serializedVersion: 3
       m_BuildTarget: DefaultTexturePlatform
-      m_MaxTextureSize: 2048
+      m_MaxTextureSize: 1024
       m_ResizeAlgorithm: 0
       m_TextureFormat: -1
-      m_TextureCompression: 0
+      m_TextureCompression: 2
       m_CompressionQuality: 50
       m_CrunchedCompression: 0
       m_AllowsAlphaSplitting: 0
@@ -60,6 +60,19 @@ SpriteAtlas:
       m_IgnorePlatformSupport: 0
       m_AndroidETC2FallbackOverride: 0
       m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    - serializedVersion: 3
+      m_BuildTarget: Standalone
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: 25
+      m_TextureCompression: 1
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 1
+      m_IgnorePlatformSupport: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
     packingSettings:
       serializedVersion: 2
       padding: 4
@@ -71,20 +84,74 @@ SpriteAtlas:
     secondaryTextureSettings: {}
     variantMultiplier: 1
     packables:
-    - {fileID: 102900000, guid: d4b71bd87e054b543a20aac8e9cc3b40, type: 3}
+    - {fileID: 102900000, guid: 992de0388c2bf9b4eae7ffe19d603f30, type: 3}
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
     packedSpriteRenderDataKeys:
-    - 3bd49f26cb544bd43817d3f0f47a703c: 21300000
-    - dc7f5e38caf30414eb6f61eeb9f1525d: 21300000
+    - efc9b7d0810e4b64bafe8e99d370ccd2: 21300000
+    - c65952016f37272429da4327742f2813: 21300000
+    - 5682b753fe4c4114f8b5d05087fa52ab: 21300000
+    - 771a4893b34451a43b20e0fed1036e24: 21300000
+    - 9b1c71e509575334c81d8fbe8798a946: 21300000
+    - 9ac86e6697412044e9487d0eb04351c8: 21300000
+    - decf42c6c81951e4bad87c89c77dd3de: 21300000
+    - 6ea0f4e79a98a4147bfd8d14670281cd: 21300000
+    - 1fea9368ffa5dba45a4d79bc7425fd08: 21300000
+    - 20c261d8cfa59c8478f1bffceee51419: 21300000
+    - f816a789ee57d45499fbc451b52b5be4: 21300000
+    - cc4369a93b546f44bb0e652401d49aaa: 21300000
+    - 3e16456b95a813b46a64018b6e95c1ab: 21300000
+    - 011b7b6c2d21cbc4180767fc442a8174: 21300000
+    - 8161a1ed43c56ea4ca78a1570c492fb0: 21300000
+    - 1464ed1f712e428489ea3c91b2b7fe2f: 21300000
+    - 565e2e1f284dc5740b1c403b98151c0d: 21300000
+    - 7d4b693fa7ea9a14881d6706208e94b4: 21300000
+    - 5c29a15fb672ba543a3ab56241b8044e: 21300000
+    - 6e7a1bef6c0434a42bfe24da04dd17df: 21300000
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
-  - {fileID: 21300000, guid: 3bd49f26cb544bd43817d3f0f47a703c, type: 3}
-  - {fileID: 21300000, guid: dc7f5e38caf30414eb6f61eeb9f1525d, type: 3}
+  - {fileID: 21300000, guid: efc9b7d0810e4b64bafe8e99d370ccd2, type: 3}
+  - {fileID: 21300000, guid: c65952016f37272429da4327742f2813, type: 3}
+  - {fileID: 21300000, guid: 5682b753fe4c4114f8b5d05087fa52ab, type: 3}
+  - {fileID: 21300000, guid: 771a4893b34451a43b20e0fed1036e24, type: 3}
+  - {fileID: 21300000, guid: 9b1c71e509575334c81d8fbe8798a946, type: 3}
+  - {fileID: 21300000, guid: 9ac86e6697412044e9487d0eb04351c8, type: 3}
+  - {fileID: 21300000, guid: decf42c6c81951e4bad87c89c77dd3de, type: 3}
+  - {fileID: 21300000, guid: 6ea0f4e79a98a4147bfd8d14670281cd, type: 3}
+  - {fileID: 21300000, guid: 1fea9368ffa5dba45a4d79bc7425fd08, type: 3}
+  - {fileID: 21300000, guid: 20c261d8cfa59c8478f1bffceee51419, type: 3}
+  - {fileID: 21300000, guid: f816a789ee57d45499fbc451b52b5be4, type: 3}
+  - {fileID: 21300000, guid: cc4369a93b546f44bb0e652401d49aaa, type: 3}
+  - {fileID: 21300000, guid: 3e16456b95a813b46a64018b6e95c1ab, type: 3}
+  - {fileID: 21300000, guid: 011b7b6c2d21cbc4180767fc442a8174, type: 3}
+  - {fileID: 21300000, guid: 8161a1ed43c56ea4ca78a1570c492fb0, type: 3}
+  - {fileID: 21300000, guid: 1464ed1f712e428489ea3c91b2b7fe2f, type: 3}
+  - {fileID: 21300000, guid: 565e2e1f284dc5740b1c403b98151c0d, type: 3}
+  - {fileID: 21300000, guid: 7d4b693fa7ea9a14881d6706208e94b4, type: 3}
+  - {fileID: 21300000, guid: 5c29a15fb672ba543a3ab56241b8044e, type: 3}
+  - {fileID: 21300000, guid: 6e7a1bef6c0434a42bfe24da04dd17df, type: 3}
   m_PackedSpriteNamesToIndex:
-  - coin
-  - panelBG
+  - Counter_2
+  - Start_Button_Blue_Dark
+  - close
+  - dark_circle
+  - Counter_1_1
+  - start_button_1
+  - icon_edit
+  - setting_icon_press
+  - setting_icon_base_yellow
+  - cross
+  - line_plg
+  - setting_icon
+  - Current_tab
+  - bg_square
+  - circle
+  - center_back
+  - setting_icon_base
+  - Other_acc_tab
+  - start_button_3
+  - icon_i
   m_RenderDataMap: {}
   m_Tag: UI_Main
   m_IsVariant: 0
